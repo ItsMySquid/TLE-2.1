@@ -1,12 +1,12 @@
-function List() {
+function Word() {
     return (
         <>
             <section>
-                <p>List</p>
+                <p>Word</p>
             </section>
         </>
     )
 }
 
 
-export default List;
+export default Word;

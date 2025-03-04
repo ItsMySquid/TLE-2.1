@@ -1,12 +1,12 @@
-function List() {
+function Results() {
     return (
         <>
             <section>
-                <p>List</p>
+                <p>Results</p>
             </section>
         </>
     )
 }
 
 
-export default List;
+export default Results;

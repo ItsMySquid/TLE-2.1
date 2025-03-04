@@ -1,12 +1,12 @@
-function List() {
+function Assignment() {
     return (
         <>
             <section>
-                <p>List</p>
+                <p>Assignment</p>
             </section>
         </>
     )
 }
 
 
-export default List;
+export default Assignment;

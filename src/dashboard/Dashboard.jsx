@@ -1,12 +1,12 @@
-function List() {
+function Dashboard() {
     return (
         <>
             <section>
-                <p>List</p>
+                <p>Dashboard</p>
             </section>
         </>
     )
 }
 
 
-export default List;
+export default Dashboard;

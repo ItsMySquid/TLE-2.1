@@ -6,6 +6,7 @@ import Lesson from "../assignments/Lesson.jsx";
 import Overview from "../assignments/overview.jsx";
 import Results from "../assignments/results.jsx";
 import Dashboard from "../dashboard/Dashboard.jsx";
+import Login from "../account/Login.jsx";
 import Layout from "./Layout.jsx";
 
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
             {
                 path: '/Resultaten',
                 element: <Results/>
+            },
+            {
+                path: '/Login',
+                element: <Login/>
             },
         ]
     }

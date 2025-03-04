@@ -1,6 +1,7 @@
 import {createBrowserRouter, RouterProvider} from "react-router";
 import List from "../words/List.jsx";
 import Word from "../words/Word.jsx";
+import Favorites from "../words/Favorites.jsx";
 import Assignment from "../assignments/Assignment.jsx";
 import Lesson from "../assignments/Lesson.jsx";
 import Overview from "../assignments/overview.jsx";
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: '/Login',
                 element: <Login/>
+            },
+            {
+                path: '/Favorieten',
+                element: <Favorites/>
             },
         ]
     }

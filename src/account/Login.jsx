@@ -11,13 +11,13 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-[calc(100vh-110px)] bg-gray-100 overflow-hidden">
+        <div className="flex flex-col items-center">
             {/* Inlogscherm Koptekst */}
-            <h2 className="text-2xl font-semibold text-center mb-6">Inlogscherm</h2>
+            <h2 className="text-2xl font-semibold text-center m-6">Inlogscherm</h2>
             {/* Zwarte lijn over de hele breedte */}
-            <hr className="w-full border-black mb-6" />
+            <hr className="w-full border-black mb-6"/>
 
-            <div className="bg-white px-8 py-20 rounded-lg shadow-lg w-[800px]">
+            <div className="bg-white px-8 py-20 rounded-lg shadow-lg w-full max-w-lg">
                 <form onSubmit={handleSubmit} className="space-y-10">
                     <div>
                         <label className="block text-gray-700">Gebruikersnaam</label>

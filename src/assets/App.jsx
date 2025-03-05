@@ -27,7 +27,7 @@ const router = createBrowserRouter([
                 element: <Word/>
             },
             {
-                path: '/Opdracht',
+                path: '/opdracht',
                 element: <Assignment/>
             },
             {

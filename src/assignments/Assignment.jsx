@@ -1,28 +1,33 @@
 import { useState, useEffect, useRef } from "react";
+// een [] met alle opties uit de les catagorie waar je dan met de next button zo het lijste af gaat met je antwoord geven en opslaan
+
+function shuffleArray(array) {
+    return array
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+}
 
 function Assignment() {
     const [selectedOption, setSelectedOption] = useState("");
-    const [message, setMessage] = useState("");
+    const [isCorrect, setIsCorrect] = useState(null);
+    const [shuffledOptions, setShuffledOptions] = useState([]);
     const assignmentRef = useRef(null);
 
     useEffect(() => {
         if (assignmentRef.current) {
-            assignmentRef.current.scrollIntoView({ behavior: "smooth" });
+            assignmentRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
         }
+        const options = ["A", "B", "C", "D"];
+        setShuffledOptions(shuffleArray(options));
     }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!selectedOption) {
-            setMessage("Kies een optie voordat je verzendt.");
-            return;
-        }
-        const correctAnswer = "A";
-        if (selectedOption === correctAnswer) {
-            setMessage("Correct! Je hebt het juiste antwoord gekozen.");
-        } else {
-            setMessage("Helaas, dat is niet het juiste antwoord. Probeer het opnieuw.");
-        }
+        if (!selectedOption) return;
+
+        const correctAnswer = "A"; // goede antwoord van video uit API
+        setIsCorrect(selectedOption === correctAnswer);
     };
 
     const handleOptionChange = (option) => {
@@ -38,35 +43,51 @@ function Assignment() {
                 <div className="bg-blue-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
                     <div className="flex justify-center">
                         <video width="100%" className="p-4" controls>
-                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" /* video uit de API */ />
                         </video>
                     </div>
-                    <form onSubmit={handleSubmit} className="flex flex-col p-4">
+                    <form onSubmit={handleSubmit} className="flex flex-col p-4" ref={assignmentRef}>
                         <div className="grid grid-cols-2 gap-4">
-                            {["A", "B", "C", "D"].map((option, index) => (
+                            {shuffledOptions.map((option) => (
                                 <button
                                     key={option}
                                     type="button"
                                     onClick={() => handleOptionChange(option)}
-                                    className={`bg-white border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300 ${selectedOption === option ? 'bg-green-100' : ''}`}
+                                    className={`border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300
+                                    ${
+                                        isCorrect === null
+                                            ? selectedOption === option
+                                                ? "bg-headerColor-100 text-white"
+                                                : "bg-white text-black"
+                                            : selectedOption === option
+                                                ? isCorrect
+                                                    ? "bg-green-500 text-white" // goed antwoord
+                                                    : "bg-red-500 text-white"   // fout antwoord
+                                                : "bg-white text-black"
+                                    }`}
                                 >
-                                    {option === "A" ? "Wie" : option === "B" ? "Wat" : option === "C" ? "Waar" : "Waarom"}
-                                </button>
+                                    {option === "A" ? "Wie" : option === "B" ? "Wat" : option === "C" ? "Waar" :  "Waarom"}
+                                </button> //option zijn kuezes uit de api
                             ))}
                         </div>
-                        <button
-                            type="submit"
-                            className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-teal-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
-                            disabled={!selectedOption}
-                        >
-                            Verzenden
-                        </button>
+                        {isCorrect === null ? (
+                            <button
+                                type="submit"
+                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-teal-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
+                                disabled={!selectedOption}
+                            >
+                                Checken
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => window.location.reload()} //naar volgende uit de []
+                                className="mt-6 py-2 px-6 rounded-lg text-white bg-teal-700 cursor-pointer"
+                            >
+                                Volgende
+                            </button>
+                        )}
                     </form>
-                    {message && (
-                        <p className={`mt-4 font-bold ${message.includes("Correct") ? "text-green-600" : "text-red-600"}`}>
-                            {message}
-                        </p>
-                    )}
                 </div>
             </section>
         </>

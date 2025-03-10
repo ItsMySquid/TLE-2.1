@@ -19,8 +19,8 @@ function Dashboard() {
                 <section className="flex flex-row flex-wrap justify-evenly">
                     <article className="basis-[43vw] rounded-md border-[#354B46] border-2 p-4 m-4">
                         <div className="flex flex-row justify-between">
-                            <h2 className="text-2xl mb-4 text-[#354B46] font-bold">Les 1</h2>
-                            <h2 className="text-2xl mb-4 text-[#354B46]">Introductie tot gebarentaal</h2>
+                            <h2 className="text-2xl mb-4 text-[#354B46]">Les 1</h2>
+                            <h2 className="text-[#354B46]">20/20</h2>
                         </div>
                         <a className="border-[#354B46] border-2 justify-center flex bg-[#E8F1F5] text-[#354B46] px-4 py-2 rounded-md hover:bg-[#2D8474] transition duration-200 ease-in-out"
                            href="#">Opnieuw oefenen</a>

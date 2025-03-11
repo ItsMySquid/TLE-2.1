@@ -79,7 +79,7 @@ function Results() {
                     <div className="grid grid-cols-2 gap-4">
                         {words.map((item, index) => (
                             <div key={item.id} className="flex items-center space-x-3">
-                                <span className="w-8 h-8 flex items-center justify-center text-white font-bold rounded-md bg-gray-200">
+                                <span className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${Math.random() > 0.5 ? "bg-green-500" : "bg-red-400"}`}>
                                     {index + 1}
                                 </span>
                                 <p className="text-lg font-semibold">{item.title}</p>

@@ -1,63 +1,63 @@
 import { useEffect, useState } from "react";
-import {Link} from "react-router";
+import { Link } from "react-router-dom"; // Correcte import
 import { FaStar } from "react-icons/fa";
-
 
 export default function List() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [categories, setCategories] = useState([
-        {
-            id: 1,
-            name: "Vraagwoorden",
-            signs: [
-                { id: 1, title: "Hoe", description: "Een vraagwoord om te vragen naar de manier waarop iets gebeurt.", image: null, video: "app/public/videos/Hoe.mp4" },
-                { id: 2, title: "Hoelang", description: "Een vraagwoord om te vragen naar een tijdsduur.", image: null, video: "app/public/videos/Hoelang.mp4" }
-            ]
-        },
-        {
-            id: 2,
-            name: "Groeten",
-            signs: [
-                { id: 3, title: "Hallo", description: "Een manier om iemand te begroeten.", image: null, video: "app/public/videos/Hallo.mp4" },
-                { id: 4, title: "Tot ziens", description: "Een manier om afscheid te nemen.", image: null, video: "app/public/videos/TotZiens.mp4" }
-            ]
-        }
-    ]);
-
-
-    // Database verbinding zodra ie gefixed is.
-    // useEffect(() => {
-    //     fetch("http://127.0.0.1:8000/api/categories")
-    //         .then(response => response.json())
-    //         .then(data => setCategories(data))
-    //         .catch(error => console.error("Fout bij ophalen van data:", error));
-    // }, []);
-
+    const [categories, setCategories] = useState([]);
     const [favorites, setFavorites] = useState([]);
 
-    // Functie om favorieten toe te voegen/verwijderen
+    useEffect(() => {
+        async function fetchWords() {
+            try {
+                const response = await fetch("http://145.24.223.48/api/v1/categories", {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                console.log("API Response:", responseData); // ✅ Debugging
+
+                // 🛠 Data correct omzetten
+                const extractedData = responseData?.data || [];
+                setCategories(extractedData); // Direct de API-structuur gebruiken
+            } catch (error) {
+                console.error("Error fetching words:", error);
+                setCategories([]);
+            }
+        }
+
+        fetchWords();
+    }, []);
+
+
+
+    // ⭐ Toggle favorieten
     const toggleFavorite = (signTitle) => {
-        setFavorites(prevFavorites =>
-            prevFavorites.includes(signTitle)
-                ? prevFavorites.filter(title => title !== signTitle)
-                : [...prevFavorites, signTitle]
+        setFavorites((prev) =>
+            prev.includes(signTitle)
+                ? prev.filter((title) => title !== signTitle)
+                : [...prev, signTitle]
         );
     };
 
+    // 🔍 Filteren op zoekopdracht
     const filteredCategories = categories
         .map(category => {
-            // ✅ Check of de categorie naam overeenkomt met de zoekopdracht
-            const categoryMatches = category.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-            // ✅ Filter woorden binnen de categorie
-            const filteredSigns = category.signs.filter(sign =>
+            const categoryMatches = category.name?.toLowerCase().includes(searchTerm.toLowerCase());
+            const filteredSigns = category.signs?.filter(sign =>
                 sign.title.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            ) || [];
 
-            // ✅ Als de categorie een match is, toon ALLE woorden
-            return categoryMatches ? { ...category, signs: category.signs } : { ...category, signs: filteredSigns };
+            return categoryMatches ? { ...category, signs: category.signs || [] } : { ...category, signs: filteredSigns };
         })
-        .filter(category => category.signs.length > 0); // Verwijder lege categorieën
+        .filter(category => category.signs.length > 0);
 
     return (
         <section className="p-8 max-w-3xl mx-auto">
@@ -71,7 +71,6 @@ export default function List() {
                 className="w-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
 
-            {/* 📂 Lijst van gefilterde categorieën */}
             {filteredCategories.length > 0 ? (
                 filteredCategories.map(category => (
                     <div key={category.id} className="mb-6 p-4 border rounded-lg shadow">
@@ -89,7 +88,7 @@ export default function List() {
                                         <FaStar
                                             className={favorites.includes(sign.title) ? "fill-yellow-500" : "fill-gray-400 stroke-gray-500"}
                                             size={20}
-                                            style={{strokeWidth: 2}}
+                                            style={{ strokeWidth: 2 }}
                                         />
                                     </button>
                                 </li>

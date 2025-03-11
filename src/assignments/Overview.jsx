@@ -1,34 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 function Overview() {
-    const words = [
-        { title: "Hoe", categoryId: 1 },
-        { title: "Hoelang", categoryId: 1 },
-        { title: "Hoeveel", categoryId: 1 },
-        { title: "Waarom", categoryId: 1 },
-        { title: "Wanneer", categoryId: 1 },
-        { title: "Wat", categoryId: 1 },
-        { title: "Welke", categoryId: 1 },
-        { title: "Wie", categoryId: 1 },
-        { title: "Waar", categoryId: 1 },
-        { title: "Algemeen vraaggebaar", categoryId: 1 },
-        { title: "Horen", categoryId: 5 },
-        { title: "Zien", categoryId: 5 },
-        { title: "Voelen", categoryId: 5 },
-        { title: "Ruiken", categoryId: 5 },
-        { title: "Proeven", categoryId: 5 },
-        { title: "Denken", categoryId: 5 },
-        { title: "Leren", categoryId: 5 },
-        { title: "Lezen", categoryId: 5 },
-        { title: "Schrijven", categoryId: 5 },
-        { title: "Spreken", categoryId: 5 }
-    ];
+    const [words, setWords] = useState([]);
+    const [randomWords, setRandomWords] = useState([]);
+    const [randomCategoryId, setRandomCategoryId] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const uniqueCategories = [...new Set(words.map(word => word.categoryId))];
-    const randomCategoryId = uniqueCategories[Math.floor(Math.random() * uniqueCategories.length)];
+    useEffect(() => {
+        const fetchWords = async () => {
+            try {
+                const response = await fetch("http://145.24.223.48/api/v1/signs");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch words");
+                }
 
-    const filteredWords = words.filter(word => word.categoryId === randomCategoryId);
-    const randomWords = filteredWords.sort(() => 0.5 - Math.random()).slice(0, 10);
+                const data = await response.json();
+                const wordsList = data.data;
+
+                // Fetch details for each word
+                const detailedWords = await Promise.all(
+                    wordsList.map(async (word) => {
+                        const detailsResponse = await fetch(word._links.self);
+                        if (!detailsResponse.ok) return null;
+
+                        const details = await detailsResponse.json();
+                        return { id: word.id, title: word.title, categoryId: details.categoryId };
+                    })
+                );
+
+                // Filter out null values (failed requests)
+                const validWords = detailedWords.filter(word => word !== null);
+
+                setWords(validWords);
+
+                if (validWords.length > 0) {
+                    // Get unique category IDs
+                    const uniqueCategories = [...new Set(validWords.map(word => word.categoryId))];
+                    const selectedCategoryId = uniqueCategories[Math.floor(Math.random() * uniqueCategories.length)];
+                    setRandomCategoryId(selectedCategoryId);
+
+                    // Filter and shuffle words from the selected category
+                    const filteredWords = validWords.filter(word => word.categoryId === selectedCategoryId);
+                    const shuffledWords = filteredWords.sort(() => 0.5 - Math.random()).slice(0, 10);
+                    setRandomWords(shuffledWords);
+                }
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWords();
+    }, []);
+
+    if (loading) {
+        return <p className="text-center text-lg">Loading...</p>;
+    }
+
+    if (error) {
+        return <p className="text-center text-lg text-red-600">Error: {error}</p>;
+    }
 
     return (
         <div>
@@ -44,7 +77,7 @@ function Overview() {
                 </div>
             </div>
 
-            <hr className="w-screen bg-black h-px border-0"/>
+            <hr className="w-screen bg-black h-px border-0" />
 
             <div className="p-6 max-w-4xl mx-auto">
                 {/* Word List */}
@@ -52,9 +85,8 @@ function Overview() {
                     <h2 className="text-lg font-bold mb-4">Woordenlijst</h2>
                     <div className="grid grid-cols-2 gap-4">
                         {randomWords.map((item, index) => (
-                            <div key={index} className="flex items-center space-x-3">
-                                <span
-                                    className="w-8 h-8 flex items-center justify-center text-white font-bold rounded-md bg-gray-200">
+                            <div key={item.id} className="flex items-center space-x-3">
+                                <span className="w-8 h-8 flex items-center justify-center text-white font-bold rounded-md bg-gray-200">
                                     {index + 1}
                                 </span>
                                 <p className="text-lg font-semibold">{item.title}</p>

@@ -1,3 +1,4 @@
+import {useParams} from "react-router"
 import { useState, useEffect, useRef } from "react";
 
 function shuffleArray(array) {
@@ -7,13 +8,16 @@ function shuffleArray(array) {
         .map(({ value }) => value);
 }
 
-function Assignment({ id }) {
+function Assignment() {
+    const params = useParams()
+    const id = params.id;
     const [videoUrl, setVideoUrl] = useState("");
     const [words, setWords] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
     const [shuffledOptions, setShuffledOptions] = useState([]);
+    const [isCompleted, setIsCompleted] = useState(false);
     const assignmentRef = useRef(null);
 
     useEffect(() => {
@@ -23,7 +27,7 @@ function Assignment({ id }) {
 
         async function fetchCategoryWords() {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/categories/${id}`, {
+                const response = await fetch(`http://145.24.223.48/api/v1/categories/${id}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -31,22 +35,33 @@ function Assignment({ id }) {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Fout bij ophalen van de opdracht: ${response.status}`);
+                    console.error(`Fout bij ophalen van de opdracht: ${response.status}`);
+                    return
                 }
 
                 const data = await response.json();
 
-                setWords(data.title);
-                setVideoUrl(data.video)
+                if (!data || !data.data || !Array.isArray(data.data.signs)) {
+                    console.error("⚠️ Fout: `data.title` is niet beschikbaar");
+                    return;
+                }
+
+                const titles = data.data.signs.map(sign => sign.title);
+                const videos = data.data.signs.map(sign => sign.video);
+
+
+                setWords(titles);
+                setVideoUrl(videos[0] || "");
+                console.log(data);
             } catch (error) {
-                throw new Error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
+                console.error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
             }
         }
         fetchCategoryWords();
     }, [id]);
 
     useEffect(() => {
-        if (words.length === 0 || currentIndex >= words.length) return;
+        if (!words || !Array.isArray(words) || words.length === 0 || currentIndex >= words.length) return;
 
         const currentAnswer = words[currentIndex];
 
@@ -55,7 +70,6 @@ function Assignment({ id }) {
 
         const finalOptions = shuffleArray([currentAnswer, ...randomTitles]);
         setShuffledOptions(finalOptions);
-
     }, [words, currentIndex]);
 
     const handleSubmit = (event) => {
@@ -71,13 +85,17 @@ function Assignment({ id }) {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
     };
 
+    const handleReturn = () => {
+        window.location.reload(); //hier de return dat die terug gaat naar lessons
+    };
+
     return (
         <>
             <section ref={assignmentRef}>
                 <h1 className="text-xl flex justify-center py-4 border-b border-black">
                     Les {id} - Opdracht
                 </h1>
-                <div className="bg-blue-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
+                <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
                     <div className="flex justify-center">
                         {videoUrl ? (
                             <video width="100%" className="p-4" controls>
@@ -106,6 +124,7 @@ function Assignment({ id }) {
                                                     : "bg-red-500 text-white"   // fout antwoord
                                                 : "bg-white text-black"
                                     }`}
+                                    disabled={isCorrect !== null}
                                 >
                                     {option}
                                 </button>
@@ -114,18 +133,26 @@ function Assignment({ id }) {
                         {isCorrect === null ? (
                             <button
                                 type="submit"
-                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-teal-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
+                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-borderColor-100 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
                                 disabled={!selectedOption}
                             >
                                 Checken
                             </button>
-                        ) : (
+                        ) : currentIndex + 1 < words.length ? (
                             <button
                                 type="button"
                                 onClick={handleNext}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-teal-700 cursor-pointer"
+                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
                             >
                                 Volgende
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={handleReturn}
+                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
+                            >
+                                Klaar
                             </button>
                         )}
                     </form>

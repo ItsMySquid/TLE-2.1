@@ -5,7 +5,7 @@ function Layout() {
         <div className="flex flex-col min-h-screen">
             <header className="bg-headerColor-100 text-white py-10 px-28 flex justify-between items-center">
                     <svg width="72" height="72" viewBox="0 0 244 244" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_109_195)">
+                        <g clipPath="url(#clip0_109_195)">
                             <path
                                 d="M41.1104 244H244V41.1022C244 41.1022 244 0 202.89 0H41.1022C41.1022 0 0 0 0 41.1104V202.89C0 202.898 0 244 41.1104 244Z"
                                 fill="#354B46"/>

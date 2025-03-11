@@ -12,6 +12,7 @@ function Assignment() {
     const params = useParams()
     const id = params.id;
     const [videoUrl, setVideoUrl] = useState("");
+    const [videos, setVideos] = useState([]);
     const [words, setWords] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -47,11 +48,14 @@ function Assignment() {
                 }
 
                 const titles = data.data.signs.map(sign => sign.title);
-                const videos = data.data.signs.map(sign => sign.video);
-
+                const videoLinks = data.data.signs.map(sign => sign.video);
 
                 setWords(titles);
-                setVideoUrl(videos[0] || "");
+                setVideos(videoLinks)
+
+                console.log("Video's opgehaald:", videoLinks);
+
+                setVideoUrl(videoLinks[0] || "");
                 console.log(data);
             } catch (error) {
                 console.error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
@@ -65,8 +69,15 @@ function Assignment() {
 
         const currentAnswer = words[currentIndex];
 
-        const otherWords = words.filter((word, index) => index !== currentIndex);
-        const randomTitles = shuffleArray(otherWords).slice(0, 3);
+        let availableWords = words.filter((word) => word !== currentAnswer);
+
+        let randomTitles = new Set();
+
+        while (randomTitles.size < 3 && availableWords.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableWords.length);
+            randomTitles.add(availableWords[randomIndex]);
+            availableWords.splice(randomIndex, 1);
+        }
 
         const finalOptions = shuffleArray([currentAnswer, ...randomTitles]);
         setShuffledOptions(finalOptions);
@@ -80,10 +91,15 @@ function Assignment() {
     };
 
     const handleNext = () => {
+        const nextIndex = (currentIndex + 1) % videos.length;
+
+        setCurrentIndex(nextIndex);
+        setVideoUrl(videos[nextIndex]);
+
         setSelectedOption(null);
         setIsCorrect(null);
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
     };
+
 
     const handleReturn = () => {
         window.location.reload(); //hier de return dat die terug gaat naar lessons
@@ -97,13 +113,13 @@ function Assignment() {
                 </h1>
                 <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
                     <div className="flex justify-center">
-                        {videoUrl ? (
-                            <video width="100%" className="p-4" controls>
+                        <video key={videoUrl} width="100%" className="p-4" controls>
+                            {videoUrl ? (
                                 <source src={videoUrl} type="video/mp4" />
-                            </video>
-                        ) : (
-                            <p>Video wordt geladen...</p>
-                        )}
+                            ) : (
+                                <p>Video wordt geladen...</p>
+                            )}
+                        </video>
                     </div>
                     <form onSubmit={handleSubmit} className="flex flex-col p-4" ref={assignmentRef}>
                         <div className="grid grid-cols-2 gap-4">

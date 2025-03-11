@@ -39,7 +39,7 @@ function Word() {
     return (
         <section>
             <h1 className="text-xl text-center py-4 border-b border-black">{word}</h1>
-            <div className="flex justify-center w-3/5 mx-auto py-8">
+            <div className="flex justify-center w-3/5 mx-auto pt-8 pb-6">
                 {videoUrl ? (
                     <video width="100%" controls>
                         <source src={videoUrl} type="video/mp4" />
@@ -48,7 +48,7 @@ function Word() {
                     <p className="text-center text-gray-500">Video wordt geladen...</p>
                 )}
             </div>
-            <div className="flex justify-between items-center w-3/5 mx-auto pt-8 pb-16">
+            <div className="flex justify-between items-center w-3/5 mx-auto pt-6 pb-12">
                 <div className="flex flex-col justify-center">
                     <button
                         onClick={() => window.history.back()}

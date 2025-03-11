@@ -27,7 +27,7 @@ function Results() {
                             id: word.id,
                             title: word.title,
                             categoryId: details.categoryId,
-                            result: Math.random() > 0.5 ? "correct" : "wrong" // Randomly assign result
+                            result: Math.random() > 0.5 ? "correct" : "wrong"
                         };
                     })
                 );
@@ -60,7 +60,14 @@ function Results() {
     return (
         <div>
             <div className="p-6 max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold text-center mb-4">Resultaten</h1>
+                <h1 className="text-2xl font-bold text-center mb-4">Les 1</h1>
+
+                <div className="relative w-full bg-gray-300 rounded-full h-6 mb-6 flex items-center justify-center">
+                    <div className="absolute left-1/4 transform -translate-x-1/2 h-6 bg-gray-100 rounded-full w-2/5"></div>
+                    <div className="absolute inset-0 flex justify-between px-16 text-xs font-semibold text-black w-full">
+                        <span className="w-2/5 text-center">Categorie {randomCategoryId}</span>
+                    </div>
+                </div>
             </div>
 
             <hr className="w-screen bg-black h-px border-0" />
@@ -71,13 +78,8 @@ function Results() {
                     <h2 className="text-lg font-bold mb-4">Jouw resultaten</h2>
                     <div className="grid grid-cols-2 gap-4">
                         {words.map((item, index) => (
-                            <div
-                                key={item.id}
-                                className="flex items-center space-x-3 p-2 rounded-md"
-                            >
-                                <span
-                                    className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${item.result === "correct" ? "bg-green-500" : "bg-red-400"}`}
-                                >
+                            <div key={item.id} className="flex items-center space-x-3">
+                                <span className="w-8 h-8 flex items-center justify-center text-white font-bold rounded-md bg-gray-200">
                                     {index + 1}
                                 </span>
                                 <p className="text-lg font-semibold">{item.title}</p>

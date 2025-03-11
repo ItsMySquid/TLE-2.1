@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {Link} from "react-router";
-import { FaStar } from "react-icons/fa";
+// import { FaStar } from "react-icons/fa";
 
 
 export default function List() {

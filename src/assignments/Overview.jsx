@@ -33,7 +33,7 @@ function Overview() {
                             {/* Lesinhoud */}
                             <div className="flex flex-col items-center p-6">
                                 {/* Emoji-*/}
-                                <div className="bg-[#008F7A] w-16 h-16 rounded-full flex items-center justify-center py-2">
+                                <div className="bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2">
                                     <span className="pb-1 text-2xl leading-none" aria-hidden="true">📖</span>
                                     <span className="sr-only">Boek icoon</span>
                                 </div>
@@ -44,7 +44,7 @@ function Overview() {
 
                             <Link
                                 to={`/les/${lesson.id}`}
-                                className="block bg-[#008F7A] text-white py-2 rounded-b-lg hover:bg-[#006F5A] focus:outline-none focus:ring-4 focus:ring-[#00C5A5]"
+                                className="block bg-[#008571] text-white py-2 rounded-b-lg hover:bg-[#008571] focus:outline-none focus:ring-4 focus:ring-[#00C5A5]"
                             >
                                 Start les
                             </Link>

@@ -1,52 +1,31 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export default function LoginForm() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+const Login = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Gebruikersnaam:", username);
-        console.log("Wachtwoord:", password);
-    };
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const token = params.get("token");
+        const email = params.get("email");
+        const loginDate = params.get("date"); // Datum uit URL
 
-    return (
-        <div className="flex flex-col items-center">
-            {/* Inlogscherm Koptekst */}
-            <h2 className="text-2xl font-semibold text-center m-6">Inlogscherm</h2>
-            {/* Zwarte lijn over de hele breedte */}
-            <hr className="w-full border-black mb-6"/>
+        if (token && email && loginDate) {
+            // Opslaan in localStorage
+            localStorage.setItem("authToken", token);
+            localStorage.setItem("userEmail", email);
+            localStorage.setItem("loginDate", loginDate);
 
-            <div className="bg-white px-8 py-20 rounded-lg shadow-lg w-full max-w-lg">
-                <form onSubmit={handleSubmit} className="space-y-10">
-                    <div>
-                        <label className="block text-gray-700">Gebruikersnaam</label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-4 py-2 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Wachtwoord</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        />
-                    </div>
-                    <div className="flex justify-center">
-                        <button
-                            type="submit"
-                            className="w-64 bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700 transition"
-                        >
-                            Inloggen
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
-}
+            // Redirect naar de homepagina zonder token in de URL
+            navigate("/", { replace: true });
+        } else {
+            console.warn("Ongeldige logingegevens, redirect naar externe site...");
+            window.location.href = "https://cmgt.hr.nl/chat-login/handle/tle2-1?redirect=http://145.24.223.48/login/";
+        }
+    }, [location, navigate]);
+
+    return <p>Bezig met inloggen...</p>;
+};
+
+export default Login;

@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react'
-import {Link} from "react-router";
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from "react-router";
 
 function Dashboard() {
-
     const [lessons, setLessons] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchLessons() {
@@ -28,17 +29,29 @@ function Dashboard() {
         fetchLessons();
     }, []);
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        navigate(`/woordenboek?search=${searchQuery}`);
+    };
+
     const completedCount = lessons.filter(lesson => lesson.completed === 20).length;
     const progressBarWidth = (completedCount / lessons.length) * 100;
 
     return (
-
         <>
             <section className="m-[5vw]">
                 {/* CURSUSVOORTGANG & ZOEKBALK */}
                 <section className="m-12">
                     <div className="mb-6 flex justify-center">
-                        <input type="text" placeholder="Zoeken" className="w-[40vw] p-2 border border-tekstColor-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+                        <form onSubmit={handleSearch} className="w-[40vw]">
+                            <input
+                                type="text"
+                                placeholder="Zoeken"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full p-2 border border-tekstColor-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+                        </form>
                     </div>
                     <div className="flex justify-between">
                         <h2 className="text-2xl mb-4 text-tekstColor-100">Cursusvoortgang</h2>
@@ -63,15 +76,14 @@ function Dashboard() {
                                     <h2 className="text-tekstColor-100">{lesson.assignments.length}/{lesson.assignments.length}</h2>
                                 </div>
                             </div>
-                            <a
+                            <Link
                                 className={`border-2 border-tekstColor-100 justify-center flex bg-tekstColor-100 text-backgroundColor-100 text-lg px-4 py-3 rounded-md hover:bg-borderColor-100 transition duration-200 ease-in-out ${
                                     lesson.completed === 20 ? "bg-white text-tekstColor-100" : ""
                                 }`}
-                                // href={"overzicht" + lesson.id}
-                                href="overzicht"
+                                to="overzicht"
                             >
                                 {lesson.completed === 20 ? "Opnieuw oefenen" : "Start les"}
-                            </a>
+                            </Link>
                         </article>
                     )}
                 </section>

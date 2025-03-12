@@ -79,7 +79,7 @@ export default function List() {
                             {category.signs.map(sign => (
                                 <li key={sign.id} className="flex justify-between items-center ml-4 text-lg">
                                     <Link
-                                        to={`/woord/${sign.title.toLowerCase().replace(/\s+/g, "-")}`}
+                                        to={`/woord/${sign.id}`}
                                         className="text-teal-700 font-semibold hover:underline"
                                     >
                                         {sign.title}

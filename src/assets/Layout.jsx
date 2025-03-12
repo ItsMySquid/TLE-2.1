@@ -7,7 +7,7 @@ function Layout() {
                 {/* Container voor logo en tekst, verder naar links */}
                 <Link to={`/`} className="flex items-center mr-auto">
                     <img src="/logo.svg" alt="Logo" className="w-20 h-20 mr-3" />
-                    <h1 className="text-xl font-bold text-tekstColor-100">Gebarentaal bij intake</h1>
+                    <h1 className="text-xl font-bold">Gebarentaal bij intake</h1>
                 </Link>
 
                 {/* Centraal geplaatste navigatie links */}

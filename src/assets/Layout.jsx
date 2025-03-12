@@ -19,7 +19,7 @@ function Layout() {
                         Woordenboek
                     </Link>
                     <Link
-                        to={`/les`}
+                        to={`/`}
                         className="text-white hover:text-green-600"
                     >
                         Lessen

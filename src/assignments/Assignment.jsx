@@ -111,7 +111,7 @@ function Assignment() {
                 <h1 className="text-xl flex justify-center py-4 border-b border-black">
                     Opdracht {id} - {name}
                 </h1>
-                <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
+                <div className="bg-backgroundColor-dark mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
                     <div className="flex justify-center">
                         <video key={videoUrl} width="100%" className="p-4" controls>
                             {videoUrl ? (
@@ -136,8 +136,8 @@ function Assignment() {
                                                 : "bg-white text-black"
                                             : selectedOption === option
                                                 ? isCorrect
-                                                    ? "bg-green-500 text-white" // goed antwoord
-                                                    : "bg-red-500 text-white"   // fout antwoord
+                                                    ? "bg-buttonColor-positive text-black" // goed antwoord
+                                                    : "bg-buttonColor-negative text-black"   // fout antwoord
                                                 : "bg-white text-black"
                                     }`}
                                     disabled={isCorrect !== null}

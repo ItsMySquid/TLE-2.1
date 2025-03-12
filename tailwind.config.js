@@ -8,10 +8,10 @@ export default {
     extend: {
       colors: {
         backgroundColor: {
-          100: '#E8F1F5'
+          100: '#ffffff'
         },
         headerColor: {
-          100: '#00C5A5'
+          100: '#008571'
         },
         buttonColor: {
           100: '#4AD996'
@@ -20,7 +20,7 @@ export default {
           100: '#2D8474'
         },
         tekstColor: {
-          100: '#354B46'
+          100: '#ffffff'
         },
       }
     },

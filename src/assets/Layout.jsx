@@ -46,6 +46,7 @@ function Layout() {
                 <Outlet />
             </main>
             <footer>
+                <p className="text-center bg-tekstColor-100 text-backgroundColor-100 p-4">© 2025 Hogeschool Rotterdam</p>
             </footer>
         </div>
     );

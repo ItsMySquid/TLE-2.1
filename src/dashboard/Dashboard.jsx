@@ -1,12 +1,82 @@
+import React, {useEffect, useState} from 'react'
+import {Link} from "react-router";
+
 function Dashboard() {
+
+    const [lessons, setLessons] = useState([]);
+
+    useEffect(() => {
+        async function fetchLessons() {
+            try {
+                const response = await fetch('http://145.24.223.48/api/v1/lessons', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('Fetched data:', data);
+
+                setLessons(data.data || []);
+                console.log('Updated lessons state:', data.data || []);
+
+            } catch (error) {
+                console.error('Error fetching lessons:', error);
+            }
+        }
+        fetchLessons();
+    }, []);
+
+    const completedCount = lessons.filter(lesson => lesson.completed === 20).length;
+    const progressBarWidth = (completedCount / lessons.length) * 100;
+
     return (
+
         <>
-            <section>
-                <p>Dashboard</p>
+            <section className="m-[5vw]">
+                {/* CURSUSVOORTGANG & ZOEKBALK */}
+                <section className="m-12">
+                    <div className="mb-6 flex justify-center">
+                        <input type="text" placeholder="Zoeken" className="w-[40vw] p-2 border border-tekstColor-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+                    </div>
+                    <div className="flex justify-between">
+                        <h2 className="text-2xl mb-4 text-tekstColor-100">Cursusvoortgang</h2>
+                        <p className="text-tekstColor-100 text-lg">{completedCount}/{lessons.length}</p>
+                    </div>
+                    <div className="h-2 flex bg-backgroundColor-100 rounded-md">
+                        <div
+                            className="h-full bg-tekstColor-100 rounded-md"
+                            style={{width: `${progressBarWidth}%`}}
+                        ></div>
+                    </div>
+                </section>
+
+                {/* LESSEN OVERZICHT */}
+                <section className="flex flex-row flex-wrap justify-evenly">
+                    {lessons.map((lesson) =>
+                        <article className="w-[40vw] rounded-md border-tekstColor-100 border-2 p-6 m-3" key={lesson.id}>
+                            <div className="flex flex-row justify-between">
+                                <h2 className="text-2xl mb-4 text-tekstColor-100 font-semibold">{lesson.name}</h2>
+                                <div className="flex flex-row">
+                                    {lesson.completed === 20 && <span className="mr-1">✔</span>}
+                                    <h2 className="text-tekstColor-100">{lesson.assignments.length}/{lesson.assignments.length}</h2>
+                                </div>
+                            </div>
+                            <a
+                                className={`border-2 border-tekstColor-100 justify-center flex bg-tekstColor-100 text-backgroundColor-100 text-lg px-4 py-3 rounded-md hover:bg-borderColor-100 transition duration-200 ease-in-out ${
+                                    lesson.completed === 20 ? "bg-white text-tekstColor-100" : ""
+                                }`}
+                                // href={"overzicht" + lesson.id}
+                                href="overzicht"
+                            >
+                                {lesson.completed === 20 ? "Opnieuw oefenen" : "Start les"}
+                            </a>
+                        </article>
+                    )}
+                </section>
             </section>
         </>
     )
 }
-
-
-export default Dashboard;
+            export default Dashboard;

@@ -43,19 +43,20 @@ function Assignment() {
                 const data = await response.json();
 
                 if (!data || !data.data || !Array.isArray(data.data.signs)) {
-                    console.error("Fout: `data.title` is niet beschikbaar");
+                    console.error("⚠️ Fout: `data.title` is niet beschikbaar");
                     return;
                 }
 
                 const titles = data.data.signs.map(sign => sign.title);
                 const videoLinks = data.data.signs.map(sign => sign.video);
-                const name = data.data.name
+                const nameCategorie = data.data.name
 
                 setWords(titles);
                 setVideos(videoLinks)
-                setName(name)
+                setName(nameCategorie)
 
-                console.log(data)
+                setVideoUrl(videoLinks[0] || "");
+                console.log(data);
             } catch (error) {
                 console.error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
             }
@@ -110,7 +111,7 @@ function Assignment() {
                 <h1 className="text-xl flex justify-center py-4 border-b border-black">
                     Opdracht {id} - {name}
                 </h1>
-                <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
+                <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
                     <div className="flex justify-center">
                         <video key={videoUrl} width="100%" className="p-4" controls>
                             {videoUrl ? (

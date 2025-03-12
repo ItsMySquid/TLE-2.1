@@ -14,11 +14,11 @@ function Assignment() {
     const [videoUrl, setVideoUrl] = useState("");
     const [videos, setVideos] = useState([]);
     const [words, setWords] = useState([]);
+    const [name, setName] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
     const [shuffledOptions, setShuffledOptions] = useState([]);
-    const [isCompleted, setIsCompleted] = useState(false);
     const assignmentRef = useRef(null);
 
     useEffect(() => {
@@ -43,20 +43,19 @@ function Assignment() {
                 const data = await response.json();
 
                 if (!data || !data.data || !Array.isArray(data.data.signs)) {
-                    console.error("⚠️ Fout: `data.title` is niet beschikbaar");
+                    console.error("Fout: `data.title` is niet beschikbaar");
                     return;
                 }
 
                 const titles = data.data.signs.map(sign => sign.title);
                 const videoLinks = data.data.signs.map(sign => sign.video);
+                const name = data.data.name
 
                 setWords(titles);
                 setVideos(videoLinks)
+                setName(name)
 
-                console.log("Video's opgehaald:", videoLinks);
-
-                setVideoUrl(videoLinks[0] || "");
-                console.log(data);
+                console.log(data)
             } catch (error) {
                 console.error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
             }
@@ -109,9 +108,9 @@ function Assignment() {
         <>
             <section ref={assignmentRef}>
                 <h1 className="text-xl flex justify-center py-4 border-b border-black">
-                    Les {id} - Opdracht
+                    Opdracht {id} - {name}
                 </h1>
-                <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
+                <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
                     <div className="flex justify-center">
                         <video key={videoUrl} width="100%" className="p-4" controls>
                             {videoUrl ? (

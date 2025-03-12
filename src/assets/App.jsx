@@ -23,11 +23,11 @@ const router = createBrowserRouter([
                 element: <List/>
             },
             {
-                path: '/woord',
+                path: '/woord/:id',
                 element: <Word/>
             },
             {
-                path: '/Opdracht',
+                path: '/opdracht/:id',
                 element: <Assignment/>
             },
             {

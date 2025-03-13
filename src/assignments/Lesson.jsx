@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {Link} from "react-router-dom";
 
 function Lesson() {
     const [signs, setSigns] = useState([]);
@@ -59,10 +60,13 @@ function Lesson() {
 
                 {/* Button */}
                 <div className="mt-6 flex justify-end">
-                    <button className="bg-green-700 text-white px-6 py-2 rounded-full hover:bg-green-800">
-                        Maak de opdracht
-                    </button>
+                    <Link to={`/opdracht/1`}>
+                        <button className="bg-green-700 text-white px-6 py-2 rounded-full hover:bg-green-800">
+                            Maak de opdracht
+                        </button>
+                    </Link>
                 </div>
+
             </div>
         </div>
     );

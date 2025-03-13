@@ -46,7 +46,7 @@ function Dashboard() {
                             <h2 className="text-2xl mb-4 font-semibold">{category.name}</h2>
                         </div>
                         <Link
-                            to={`/opdracht/${category.id}`} // Verandering van link naar categorieën
+                            to={`/les`} // Verandering van link naar categorieën
                             className={`flex justify-center items-center border-2 text-lg px-6 py-3 rounded-md bg-headerColor-100 text-backgroundColor-100`}
                         >
                             Bekijk Categorie

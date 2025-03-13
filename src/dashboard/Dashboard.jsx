@@ -65,7 +65,7 @@ function Dashboard() {
                             </div>
                         </div>
                         <Link
-                            to={`/overzicht/${lesson.id}`}
+                            to={`/overzicht`}
                             className={`flex justify-center items-center border-2 text-lg px-6 py-3 rounded-md transition duration-200 ease-in-out ${
                                 lesson.completed === 20
                                     ? "bg-white text-blue-500"

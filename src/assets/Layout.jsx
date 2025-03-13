@@ -16,13 +16,13 @@ function Layout() {
 
                 {/* Centraal geplaatste navigatie links */}
                 <div className="flex space-x-6 absolute left-1/2 transform -translate-x-1/2">
-                    <Link to={`/woordenboek`} className="text-white hover:text-green-600">
+                    <Link to={`/woordenboek`} className="text-white">
                     Woordenboek
                     </Link>
-                    <Link to={`/les`} className="text-white hover:text-green-600">
+                    <Link to={`/les`} className="text-white">
                         Lessen
                     </Link>
-                    <Link to={`/favorieten`} className="text-white hover:text-green-600">
+                    <Link to={`/favorieten`} className="text-white">
                         Favorieten
                     </Link>
                 </div>

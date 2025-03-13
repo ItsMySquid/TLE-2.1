@@ -1,4 +1,4 @@
-import {useParams} from "react-router"
+import {useParams, useNavigate} from "react-router"
 import { useState, useEffect, useRef } from "react";
 
 function shuffleArray(array) {
@@ -9,8 +9,10 @@ function shuffleArray(array) {
 }
 
 function Assignment() {
-    const params = useParams()
-    const id = params.id;
+    const { id } = useParams()
+    const navigate = useNavigate();
+    const assignmentRef = useRef(null);
+
     const [videoUrl, setVideoUrl] = useState("");
     const [videos, setVideos] = useState([]);
     const [words, setWords] = useState([]);
@@ -19,7 +21,9 @@ function Assignment() {
     const [selectedOption, setSelectedOption] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
     const [shuffledOptions, setShuffledOptions] = useState([]);
-    const assignmentRef = useRef(null);
+    const [wordUsage, setWordUsage] = useState({});
+    const [wordCount, setWordCount] = useState({});
+    const previousIndexRef = useRef(null);
 
     useEffect(() => {
         if (assignmentRef.current) {
@@ -35,49 +39,61 @@ function Assignment() {
                     },
                 });
 
-                if (!response.ok) {
-                    console.error(`Fout bij ophalen van de opdracht: ${response.status}`);
-                    return
-                }
+                if (!response.ok) throw new Error(`Fout bij ophalen van de opdracht: ${response.status}`);
 
                 const data = await response.json();
 
-                if (!data || !data.data || !Array.isArray(data.data.signs)) {
-                    console.error("⚠️ Fout: `data.title` is niet beschikbaar");
-                    return;
-                }
+                if (!data?.data?.signs) throw new Error("Geen geldige data ontvangen.");
 
-                const titles = data.data.signs.map(sign => sign.title);
-                const videoLinks = data.data.signs.map(sign => sign.video);
-                const nameCategorie = data.data.name
+                const wordsData = data.data.signs.map(sign => ({
+                    title: sign.title,
+                    video: sign.video
+                }));
+                const nameCategorie = data.data.name;
 
-                setWords(titles);
-                setVideos(videoLinks)
+                const shuffledWordsData = shuffleArray(wordsData);
+
+                setWords(shuffledWordsData);
+                setVideos(shuffledWordsData.map(word => word.video));
                 setName(nameCategorie)
-
-                setVideoUrl(videoLinks[0] || "");
-                console.log(data);
+                setVideoUrl(shuffledWordsData[0]?.video || "");
             } catch (error) {
-                console.error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
+                console.error("Fout:", error.message);
             }
         }
         fetchCategoryWords();
     }, [id]);
 
     useEffect(() => {
-        if (!words || !Array.isArray(words) || words.length === 0 || currentIndex >= words.length) return;
+        if (words.length === 0 || currentIndex >= words.length) return;
 
         const currentAnswer = words[currentIndex];
-
         let availableWords = words.filter((word) => word !== currentAnswer);
-
         let randomTitles = new Set();
+
+        let updatedUsage = { ...wordUsage };
+        updatedUsage[currentAnswer] = (updatedUsage[currentAnswer] || 0) + 1;
+        availableWords = availableWords.filter(word => (updatedUsage[word] || 0) < 4);
 
         while (randomTitles.size < 3 && availableWords.length > 0) {
             const randomIndex = Math.floor(Math.random() * availableWords.length);
-            randomTitles.add(availableWords[randomIndex]);
+            const chosenWord = availableWords[randomIndex];
+
+            randomTitles.add(chosenWord);
+            updatedUsage[chosenWord] = (updatedUsage[chosenWord] || 0) + 1;
+
+            // Verwijder het gekozen woord om herhaling te voorkomen
             availableWords.splice(randomIndex, 1);
         }
+
+        while (randomTitles.size < 3) {
+            const remainingWords = words.filter((word) => !randomTitles.has(word) && word !== currentAnswer);
+            if (remainingWords.length > 0) {
+                randomTitles.add(remainingWords[0]);
+            }
+        }
+
+        setWordUsage(updatedUsage);
 
         const finalOptions = shuffleArray([currentAnswer, ...randomTitles]);
         setShuffledOptions(finalOptions);
@@ -91,10 +107,31 @@ function Assignment() {
     };
 
     const handleNext = () => {
-        const nextIndex = (currentIndex + 1) % videos.length;
+        let nextIndex = currentIndex + 1;
+
+        console.log("Current Index: ", currentIndex); // Log current index
+        console.log("Next Index: ", nextIndex); // Log next index
+
+        while (nextIndex < words.length && wordCount[words[nextIndex]] >= 4) {
+            nextIndex += 1;
+        }
+
+        if (nextIndex >= words.length) {
+            nextIndex = 0;
+        }
+
+        console.log("Next Index after validation: ", nextIndex);
+        console.log("Next Video URL: ", words[nextIndex]?.video);
+
+        setWordCount((prev) => ({
+            ...prev,
+            [words[nextIndex].title]: (prev[words[nextIndex].title] || 0) + 1,
+        }));
+
+        previousIndexRef.current = currentIndex;
 
         setCurrentIndex(nextIndex);
-        setVideoUrl(videos[nextIndex]);
+        setVideoUrl(words[nextIndex]?.video || "");
 
         setSelectedOption(null);
         setIsCorrect(null);
@@ -102,7 +139,7 @@ function Assignment() {
 
 
     const handleReturn = () => {
-        window.location.reload(); //hier de return dat die terug gaat naar lessons
+        navigate("/Resultaten"); //hier de return dat die terug gaat naar lessons
     };
 
     return (
@@ -142,7 +179,7 @@ function Assignment() {
                                     }`}
                                     disabled={isCorrect !== null}
                                 >
-                                    {option}
+                                    {option.title}
                                 </button>
                             ))}
                         </div>

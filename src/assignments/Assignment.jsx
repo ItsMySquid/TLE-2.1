@@ -14,7 +14,6 @@ function Assignment() {
     const assignmentRef = useRef(null);
 
     const [videoUrl, setVideoUrl] = useState("");
-    const [videos, setVideos] = useState([]);
     const [words, setWords] = useState([]);
     const [name, setName] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -54,7 +53,6 @@ function Assignment() {
                 const shuffledWordsData = shuffleArray(wordsData);
 
                 setWords(shuffledWordsData);
-                setVideos(shuffledWordsData.map(word => word.video));
                 setName(nameCategorie)
                 setVideoUrl(shuffledWordsData[0]?.video || "");
             } catch (error) {
@@ -69,35 +67,41 @@ function Assignment() {
 
         const currentAnswer = words[currentIndex];
         let availableWords = words.filter((word) => word !== currentAnswer);
-        let randomTitles = new Set();
+        let randomTitles = [currentAnswer];
 
         let updatedUsage = { ...wordUsage };
-        updatedUsage[currentAnswer] = (updatedUsage[currentAnswer] || 0) + 1;
-        availableWords = availableWords.filter(word => (updatedUsage[word] || 0) < 4);
+        updatedUsage[currentAnswer.title] = (updatedUsage[currentAnswer.title] || 0) + 1;
 
-        while (randomTitles.size < 3 && availableWords.length > 0) {
+        availableWords = availableWords.filter(word => (updatedUsage[word.title] || 0) < 4);
+
+        while (randomTitles.length < 4 && availableWords.length > 0) {
             const randomIndex = Math.floor(Math.random() * availableWords.length);
             const chosenWord = availableWords[randomIndex];
 
-            randomTitles.add(chosenWord);
-            updatedUsage[chosenWord] = (updatedUsage[chosenWord] || 0) + 1;
+            randomTitles.push(chosenWord);
+            updatedUsage[chosenWord.title] = (updatedUsage[chosenWord.title] || 0) + 1;
 
-            // Verwijder het gekozen woord om herhaling te voorkomen
             availableWords.splice(randomIndex, 1);
         }
 
-        while (randomTitles.size < 3) {
-            const remainingWords = words.filter((word) => !randomTitles.has(word) && word !== currentAnswer);
-            if (remainingWords.length > 0) {
-                randomTitles.add(remainingWords[0]);
-            }
+        if (randomTitles.length < 4) {
+            const remainingWords = words.filter((word) => !randomTitles.includes(word));
+            remainingWords.forEach(word => {
+                if (randomTitles.length < 4) {
+                    randomTitles.push(word);
+                }
+            });
         }
+
+        const finalOptions = shuffleArray(randomTitles);
+        setShuffledOptions(finalOptions);
 
         setWordUsage(updatedUsage);
 
-        const finalOptions = shuffleArray([currentAnswer, ...randomTitles]);
-        setShuffledOptions(finalOptions);
+        console.log('Shuffled Options:', finalOptions);  // Debugging om te zien wat er wordt gegenereerd
+
     }, [words, currentIndex]);
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -109,9 +113,6 @@ function Assignment() {
     const handleNext = () => {
         let nextIndex = currentIndex + 1;
 
-        console.log("Current Index: ", currentIndex); // Log current index
-        console.log("Next Index: ", nextIndex); // Log next index
-
         while (nextIndex < words.length && wordCount[words[nextIndex]] >= 4) {
             nextIndex += 1;
         }
@@ -119,9 +120,6 @@ function Assignment() {
         if (nextIndex >= words.length) {
             nextIndex = 0;
         }
-
-        console.log("Next Index after validation: ", nextIndex);
-        console.log("Next Video URL: ", words[nextIndex]?.video);
 
         setWordCount((prev) => ({
             ...prev,
@@ -139,7 +137,7 @@ function Assignment() {
 
 
     const handleReturn = () => {
-        navigate("/Resultaten"); //hier de return dat die terug gaat naar lessons
+        navigate("/Resultaten");
     };
 
     return (

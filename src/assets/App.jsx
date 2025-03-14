@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     { path: "/login", element: <Login /> }, // Tussenpagina
 
     {
-        element: <ProtectedRoute />, // Beveiligde routes
+        // element: <ProtectedRoute />, // Beveiligde routes
         children: [
             {
                 element: <Layout />,
@@ -24,8 +24,8 @@ const router = createBrowserRouter([
                     { path: "/woordenboek", element: <List /> },
                     { path: "/woord/:id", element: <Word /> },
                     { path: "/opdracht/:id", element: <Assignment /> },
-                    { path: "/Les", element: <Lesson /> },
-                    { path: "/Overzicht", element: <Overview /> },
+                    { path: "/Les/:id", element: <Lesson /> },
+                    { path: "/Overzicht/:id", element: <Overview /> },
                     { path: "/Resultaten", element: <Results /> },
                     { path: "/Favorieten", element: <Favorites /> },
                 ],

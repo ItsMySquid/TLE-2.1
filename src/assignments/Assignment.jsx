@@ -1,4 +1,4 @@
-import {useParams} from "react-router"
+import { useParams } from "react-router";
 import { useState, useEffect, useRef } from "react";
 
 function shuffleArray(array) {
@@ -9,7 +9,7 @@ function shuffleArray(array) {
 }
 
 function Assignment() {
-    const params = useParams()
+    const params = useParams();
     const id = params.id;
     const [videoUrl, setVideoUrl] = useState("");
     const [videos, setVideos] = useState([]);
@@ -19,6 +19,7 @@ function Assignment() {
     const [isCorrect, setIsCorrect] = useState(null);
     const [shuffledOptions, setShuffledOptions] = useState([]);
     const [isCompleted, setIsCompleted] = useState(false);
+    const [showErrorMessage, setShowErrorMessage] = useState(false); // Nieuw: Toon foutbericht
     const assignmentRef = useRef(null);
 
     useEffect(() => {
@@ -37,7 +38,7 @@ function Assignment() {
 
                 if (!response.ok) {
                     console.error(`Fout bij ophalen van de opdracht: ${response.status}`);
-                    return
+                    return;
                 }
 
                 const data = await response.json();
@@ -51,16 +52,14 @@ function Assignment() {
                 const videoLinks = data.data.signs.map(sign => sign.video);
 
                 setWords(titles);
-                setVideos(videoLinks)
-
-                console.log("Video's opgehaald:", videoLinks);
+                setVideos(videoLinks);
 
                 setVideoUrl(videoLinks[0] || "");
-                console.log(data);
             } catch (error) {
                 console.error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
             }
         }
+
         fetchCategoryWords();
     }, [id]);
 
@@ -68,9 +67,7 @@ function Assignment() {
         if (!words || !Array.isArray(words) || words.length === 0 || currentIndex >= words.length) return;
 
         const currentAnswer = words[currentIndex];
-
         let availableWords = words.filter((word) => word !== currentAnswer);
-
         let randomTitles = new Set();
 
         while (randomTitles.size < 3 && availableWords.length > 0) {
@@ -87,7 +84,12 @@ function Assignment() {
         event.preventDefault();
         if (!selectedOption) return;
 
-        setIsCorrect(selectedOption === words[currentIndex]);
+        const correct = selectedOption === words[currentIndex];
+        setIsCorrect(correct);
+
+        if (!correct) {
+            setShowErrorMessage(true); // Toon foutmelding als het antwoord fout is
+        }
     };
 
     const handleNext = () => {
@@ -98,11 +100,11 @@ function Assignment() {
 
         setSelectedOption(null);
         setIsCorrect(null);
+        setShowErrorMessage(false); // Verberg foutmelding bij verder gaan
     };
 
-
     const handleReturn = () => {
-        window.location.reload(); //hier de return dat die terug gaat naar lessons
+        window.location.reload(); // hier de return dat die terug gaat naar lessons
     };
 
     return (
@@ -129,16 +131,15 @@ function Assignment() {
                                     type="button"
                                     onClick={() => setSelectedOption(option)}
                                     className={`border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300
-                                    ${
-                                        isCorrect === null
-                                            ? selectedOption === option
-                                                ? "bg-headerColor-100 text-white"
-                                                : "bg-white text-black"
-                                            : selectedOption === option
-                                                ? isCorrect
-                                                    ? "bg-green-500 text-white" // goed antwoord
-                                                    : "bg-red-500 text-white"   // fout antwoord
-                                                : "bg-white text-black"
+                                    ${isCorrect === null
+                                        ? selectedOption === option
+                                            ? "bg-headerColor-100 text-white"
+                                            : "bg-white text-black"
+                                        : selectedOption === option
+                                            ? isCorrect
+                                                ? "bg-green-500 text-white" // goed antwoord
+                                                : "bg-red-500 text-white"   // fout antwoord
+                                            : "bg-white text-black"
                                     }`}
                                     disabled={isCorrect !== null}
                                 >
@@ -172,6 +173,13 @@ function Assignment() {
                             </button>
                         )}
                     </form>
+
+                    {/* Foutmelding als het antwoord fout is */}
+                    {showErrorMessage && !isCorrect && (
+                        <p className="mt-4 text-center text-red-600 font-semibold">
+                            Oeps! Je antwoord was niet correct. Je kunt je fouten later opnieuw oefenen.
+                        </p>
+                    )}
                 </div>
             </section>
         </>

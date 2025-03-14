@@ -19,7 +19,7 @@ function Layout() {
                     <Link to={`/woordenboek`} className="text-white">
                     Woordenboek
                     </Link>
-                    <Link to={`/les`} className="text-white">
+                    <Link to={`/`} className="text-white">
                         Lessen
                     </Link>
                     <Link to={`/favorieten`} className="text-white">

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-function Dashboard() {
+function Overview() {
     const [categories, setCategories] = useState([]);
-    const { id } = useParams(); // Les ID ophalen uit de URL
-    const navigate = useNavigate();
+    const { id } = useParams();
 
     useEffect(() => {
         async function fetchCategories() {
@@ -18,24 +17,23 @@ function Dashboard() {
                 console.log('Full API Response:', data);
 
                 if (Array.isArray(data)) {
-                    // Toon categorieën afhankelijk van de les-ID
                     let selectedCategories = [];
                     if (id === '1') {
-                        selectedCategories = data.slice(0, 4); // Categorieën 1 t/m 4
+                        selectedCategories = data.slice(0, 4);
                     } else if (id === '2') {
-                        selectedCategories = data.slice(4, 8); // Categorieën 5 t/m 8
+                        selectedCategories = data.slice(4, 8);
                     } else if (id === '3') {
-                        selectedCategories = data.slice(8, 13); // Categorieën 9 t/m 13
+                        selectedCategories = data.slice(8, 13);
                     } else if (id === '4') {
-                        selectedCategories = data.slice(13, 15); // Categorieën 14 en 15
+                        selectedCategories = data.slice(13, 15);
                     } else if (id === '5') {
-                        selectedCategories = data.slice(15, 20); // Categorieën 16 t/m 20
+                        selectedCategories = data.slice(15, 20);
                     } else if (id === '6') {
-                        selectedCategories = data.slice(20, 22); // Categorieën 21 en 22
+                        selectedCategories = data.slice(20, 22);
                     } else if (id === '7') {
-                        selectedCategories = data.slice(22, 25); // Categorieën 23 t/m 25
+                        selectedCategories = data.slice(22, 25);
                     }
-                    setCategories(selectedCategories); // De geselecteerde categorieën opslaan
+                    setCategories(selectedCategories);
                 } else {
                     console.error('Unexpected API response format:', data);
                 }
@@ -45,43 +43,44 @@ function Dashboard() {
         }
 
         fetchCategories();
-    }, [id]); // Laad opnieuw wanneer lesId verandert
+    }, [id]);
 
     return (
-        <section className="m-[5vw] text-black">
-            <div className="flex gap-20 justify-center items-start">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md"
-                >
-                    Terug
-                </button>
+        <div className="min-h-screen bg-gray-50 font-radikal">
+            <div className="text-center mt-10">
+                <h2 className="text-3xl font-bold text-gray-800">Categorieoverzicht</h2>
+                <p className="text-gray-600 mt-2 text-lg">Kies een categorie en start direct met leren!</p>
+                <div className="w-16 h-1 bg-[#008F7A] mx-auto mt-4 rounded-full"></div>
+            </div>
 
-                <section className="flex flex-row flex-wrap gap-6">
+            <main className="p-8 flex justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {categories.map((category) => (
-                        <article
-                            className="relative w-[35vw] rounded-md border-2 border-black shadow-lg p-6"
+                        <div
                             key={category.id}
+                            className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 w-80 text-center p-6"
                         >
-                            <div className="absolute top-2 right-2 bg-gray-200 px-3 py-1 rounded-full text-sm">
-                                0 / {category.signs?.length || 0}
-                            </div>
-
-                            <div className="flex flex-row justify-between">
-                                <h2 className="text-2xl mb-4 font-semibold">{category.name}</h2>
+                            <div className="bg-[#008F7A] h-2 rounded-t-xl"></div>
+                            <div className="flex flex-col items-center py-4">
+                                <div className="bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2 shadow-md">
+                                    <span className="text-3xl" aria-hidden="true">📖</span>
+                                    <span className="sr-only">Boek icoon</span>
+                                </div>
+                                <h3 className="font-semibold text-xl text-gray-800 mt-4">{category.name}</h3>
+                                <p className="text-gray-500 text-sm mt-2">{category.description || ''}</p>
                             </div>
                             <Link
                                 to={`/les/${category.id}`}
-                                className="flex justify-center items-center border-2 text-lg px-6 py-3 rounded-md bg-headerColor-100 text-backgroundColor-100"
+                                className="block bg-[#008571] text-white py-3 rounded-lg shadow-md transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#00C5A5] font-semibold text-lg mt-4"
                             >
-                                Bekijk Categorie
+                                Start categorie
                             </Link>
-                        </article>
+                        </div>
                     ))}
-                </section>
-            </div>
-        </section>
+                </div>
+            </main>
+        </div>
     );
 }
 
-export default Dashboard;
+export default Overview;

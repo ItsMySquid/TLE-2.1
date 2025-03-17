@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // Correcte import
+import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 
 export default function List() {
     const [searchTerm, setSearchTerm] = useState("");
     const [categories, setCategories] = useState([]);
-    const [favorites, setFavorites] = useState([]);
+    const [favorites, setFavorites] = useState([]); // Favorieten bijhouden
+
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
         async function fetchWords() {
@@ -22,13 +24,7 @@ export default function List() {
                 }
 
                 const responseData = await response.json();
-                console.log("Full API Response:", responseData); // 🔍 Check hoe de API eruitziet
-
-                // Controleer of responseData een array is
-                const extractedData = Array.isArray(responseData) ? responseData : [];
-                // console.log("Extracted Data Before Setting State:", extractedData);
-
-                setCategories(extractedData);
+                setCategories(Array.isArray(responseData) ? responseData : []);
             } catch (error) {
                 console.error("Error fetching words:", error);
             }
@@ -37,19 +33,95 @@ export default function List() {
         fetchWords();
     }, []);
 
+    // 🟡 Haal de opgeslagen favorieten op bij het laden van de pagina
+    useEffect(() => {
+        async function fetchFavorites() {
+            if (!token) return;
 
+            try {
+                const response = await fetch("http://145.24.223.48/api/v1/favorites", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json",
+                    },
+                });
 
+                if (!response.ok) {
+                    throw new Error(`Fout bij ophalen favorieten: ${response.status}`);
+                }
 
+                const favoriteList = await response.json();
+                const favoriteTitles = favoriteList.map(fav => fav.sign_id); // Opslaan als ID's
+                setFavorites(favoriteTitles);
+            } catch (error) {
+                console.error("Error bij ophalen favorieten:", error);
+            }
+        }
 
-    // ⭐ Toggle favorieten
-    const toggleFavorite = (signTitle) => {
-        setFavorites((prev) =>
-            prev.includes(signTitle)
-                ? prev.filter((title) => title !== signTitle)
-                : [...prev, signTitle]
-        );
+        fetchFavorites();
+    }, [token]); // Alleen uitvoeren als token verandert
+
+    // ⭐ Toggle favorieten (aanpassen van favorieten bij klikken)
+    const toggleFavorite = async (sign) => {
+        if (!token) {
+            console.error("Geen token gevonden. Gebruiker moet ingelogd zijn.");
+            return;
+        }
+
+        try {
+            // Check of de sign al een favoriet is
+            const responseCheck = await fetch("http://145.24.223.48/api/v1/favorites", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json",
+                },
+            });
+
+            if (!responseCheck.ok) {
+                throw new Error(`Fout bij ophalen favorieten: ${responseCheck.status}`);
+            }
+
+            const favoriteList = await responseCheck.json();
+            const existingFavorite = favoriteList.find(fav => fav.sign_id === sign.id);
+
+            if (existingFavorite) {
+                // DELETE als het al een favoriet is
+                const responseDelete = await fetch(`http://145.24.223.48/api/v1/favorites/${sign.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+
+                if (!responseDelete.ok) {
+                    throw new Error(`Fout bij verwijderen favoriet: ${responseDelete.status}`);
+                }
+
+                setFavorites(prev => prev.filter(id => id !== sign.id));
+            } else {
+                // POST als het nog geen favoriet is
+                const responsePost = await fetch("http://145.24.223.48/api/v1/favorites", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ sign_id: sign.id }),
+                });
+
+                if (!responsePost.ok) {
+                    throw new Error(`Fout bij opslaan favoriet: ${responsePost.status}`);
+                }
+
+                setFavorites(prev => [...prev, sign.id]);
+            }
+        } catch (error) {
+            console.error("Error bij verwerken favoriet:", error);
+        }
     };
-    console.log(categories);
+
     // 🔍 Filteren op zoekopdracht
     const filteredCategories = categories
         .map(category => {
@@ -61,7 +133,6 @@ export default function List() {
             return categoryMatches ? { ...category, signs: category.signs || [] } : { ...category, signs: filteredSigns };
         })
         .filter(category => category.signs.length > 0);
-
 
     return (
         <section className="p-8 max-w-3xl mx-auto">
@@ -88,9 +159,9 @@ export default function List() {
                                     >
                                         {sign.title}
                                     </Link>
-                                    <button onClick={() => toggleFavorite(sign.title)} className="ml-4">
+                                    <button onClick={() => toggleFavorite(sign)} className="ml-4">
                                         <FaStar
-                                            className={favorites.includes(sign.title) ? "fill-yellow-500" : "fill-gray-400 stroke-gray-500"}
+                                            className={favorites.includes(sign.id) ? "fill-yellow-500" : "fill-gray-400 stroke-gray-500"}
                                             size={20}
                                             style={{ strokeWidth: 2 }}
                                         />

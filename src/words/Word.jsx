@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa"; // ⭐ Gebruik de FaStar component
 
 function Word() {
     const { id } = useParams();
@@ -8,6 +9,10 @@ function Word() {
     const [word, setWord] = useState("");
     const [favoriet, setFavoriet] = useState(false);
 
+    // Haal de token op uit localStorage
+    const token = localStorage.getItem("authToken");
+
+    // Haal het woord en video op
     useEffect(() => {
         async function fetchWord() {
             try {
@@ -32,6 +37,55 @@ function Word() {
         }
         fetchWord();
     }, [id]);
+
+    // Haal op of het woord een favoriet is voor de gebruiker
+    useEffect(() => {
+        async function checkFavorite() {
+            if (!token) return;
+
+            try {
+                const response = await fetch(`http://145.24.223.48/api/v1/favorites/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setFavoriet(data.is_favorite); // Veronderstel dat de API een veld "is_favorite" teruggeeft
+                }
+            } catch (error) {
+                console.error("Fout bij het ophalen van favorieten:", error);
+            }
+        }
+        checkFavorite();
+    }, [id, token]);
+
+    // Voeg het woord toe aan favorieten
+    async function toggleFavorite() {
+        if (!token) return;
+
+        try {
+            const method = favoriet ? 'DELETE' : 'POST'; // Gebruik POST om toe te voegen, DELETE om te verwijderen
+            const response = await fetch(`http://145.24.223.48/api/v1/favorites/${id}`, {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Fout bij ${favoriet ? 'verwijderen' : 'toevoegen'} van favoriet: ${response.status}`);
+            }
+
+            setFavoriet(!favoriet); // Werk de favoriet status bij
+        } catch (error) {
+            console.error("Error bij toevoegen/verwijderen favoriet:", error);
+        }
+    }
 
     return (
         <section>
@@ -60,13 +114,11 @@ function Word() {
                     Terug
                 </button>
 
-                {/* Favorieten knop */}
-                <button
-                    onClick={() => setFavoriet(!favoriet)}
-                    className={`text-4xl ${favoriet ? 'text-yellow-500' : 'text-black'} bg-none border-none cursor-pointer`}
-                >
-                    {favoriet ? "★" : "☆"}
-                </button>
+                {/* Favorieten knop met FaStar */}
+                <FaStar
+                    onClick={toggleFavorite}
+                    className={`text-4xl cursor-pointer ${favoriet ? 'text-yellow-500' : 'text-black'}`}
+                />
 
                 {/* Volgende knop */}
                 <button

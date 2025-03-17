@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function Word() {
     const { id } = useParams();
@@ -31,12 +31,19 @@ function Word() {
             }
         }
         fetchWord();
-    }, [id]); // ✅ Zorgt ervoor dat de data opnieuw wordt opgehaald bij verandering van id
+    }, [id]);
 
     return (
         <section>
-            <h1 className="text-xl text-center py-4 border-b border-black">{word}</h1>
-            <div className="flex justify-center w-3/5 mx-auto pt-8 pb-6">
+            <div className="p-6 max-w-4xl mx-auto">
+                <div className="flex items-center mb-4">
+                    {/* Center de categoryName */}
+                    <div className="flex-1 text-center">
+                        <h1 className="text-2xl font-bold">{word}</h1>
+                    </div>
+                </div>
+            </div>
+            <div className="flex justify-center w-1/2 mx-auto pt-8 pb-6">
                 {videoUrl ? (
                     <video key={videoUrl} width="100%" controls>
                         <source src={videoUrl} type="video/mp4" />
@@ -45,7 +52,7 @@ function Word() {
                     <p className="text-center text-gray-500">Video wordt geladen...</p>
                 )}
             </div>
-            <div className="flex justify-between items-center w-3/5 mx-auto pt-6 pb-12">
+            <div className="flex justify-between items-center w-1/2 mx-auto pt-6 pb-12">
                 {/* Terug knop */}
                 <button
                     onClick={() => navigate(-1)}

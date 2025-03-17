@@ -1,5 +1,5 @@
 import {useParams, useNavigate} from "react-router"
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function shuffleArray(array) {
     return array
@@ -12,6 +12,7 @@ function Assignment() {
     const { id } = useParams()
     const navigate = useNavigate();
     const assignmentRef = useRef(null);
+    const [message, setMessage] = useState(null)
 
     const [videoUrl, setVideoUrl] = useState("");
     const [words, setWords] = useState([]);
@@ -107,7 +108,12 @@ function Assignment() {
         event.preventDefault();
         if (!selectedOption) return;
 
-        setIsCorrect(selectedOption === words[currentIndex]);
+        const correct = selectedOption === words[currentIndex];
+        setIsCorrect(correct);
+
+        if (!correct) {
+            setMessage(`Fout, je kunt na de opdracht het weer opnieuw proberen.`)
+        }
     };
 
     const handleNext = () => {
@@ -133,8 +139,8 @@ function Assignment() {
 
         setSelectedOption(null);
         setIsCorrect(null);
+        setMessage("");
     };
-
 
     const handleReturn = () => {
         navigate("/Resultaten");
@@ -143,9 +149,21 @@ function Assignment() {
     return (
         <>
             <section ref={assignmentRef}>
-                <h1 className="text-xl flex justify-center py-4 border-b border-black">
-                    Opdracht {id} - {name}
-                </h1>
+                <div className="p-6 max-w-4xl mx-auto">
+                    <div className="flex items-center mb-4">
+                        {/* Terugknop links van de categoryName */}
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md"
+                        >
+                            Terug
+                        </button>
+                        {/* Center de categoryName */}
+                        <div className="flex-1 text-center">
+                            <h1 className="text-2xl font-bold">Opdracht {id} - {name}</h1>
+                        </div>
+                    </div>
+                </div>
                 <div className="bg-backgroundColor-dark mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
                     <div className="flex justify-center">
                         <video key={videoUrl} width="100%" className="p-4" controls>
@@ -180,6 +198,13 @@ function Assignment() {
                                     {option.title}
                                 </button>
                             ))}
+                        </div>
+                        <div>
+                            {message && (
+                                <p className="mt-4 text-lg font-semibold text-buttonColor-negative">
+                                    {message}
+                                </p>
+                            )}
                         </div>
                         {isCorrect === null ? (
                             <button

@@ -22,7 +22,7 @@ export default function List() {
                 }
 
                 const responseData = await response.json();
-                // console.log("Full API Response:", responseData); // 🔍 Check hoe de API eruitziet
+                console.log("Full API Response:", responseData); // 🔍 Check hoe de API eruitziet
 
                 // Controleer of responseData een array is
                 const extractedData = Array.isArray(responseData) ? responseData : [];

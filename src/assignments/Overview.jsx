@@ -1,4 +1,3 @@
-"use client"
 
 import { useEffect, useState } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
@@ -84,18 +83,19 @@ function Overview() {
                     {categories.map((category) => (
                         <div
                             key={category.id}
-                            className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 w-80 text-center p-6"
+                            className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 w-80 text-center p-6 "
                         >
-                        <div className="bg-[#008F7A] h-2 rounded-t-xl"></div>
+                            <div className="bg-[#008F7A] h-2 rounded-t-xl"></div>
                             <div className="flex flex-col items-center py-4">
-                                <div className="bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2 shadow-md">
-                  <span className="text-3xl" aria-hidden="true">
-                    📖
-                  </span>
+                                <div className="bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2 shadow-md ">
+                                    <span className="text-3xl mb-1" aria-hidden="true">📖</span>
                                     <span className="sr-only">Boek icoon</span>
                                 </div>
                                 <h3 className="font-semibold text-xl text-gray-800 mt-4">{category.name}</h3>
                                 <p className="text-gray-500 text-sm mt-2">{category.description || ""}</p>
+                                <p className="text-gray-700 font-medium mt-1">
+                                    Aantal gebaren: {category.signs?.length || 0}
+                                </p>
                             </div>
                             <Link
                                 to={`/les/${category.id}`}

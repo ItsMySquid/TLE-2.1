@@ -17,10 +17,13 @@ function Dashboard() {
                 });
 
                 const data = await response.json();
-                console.log('Fetched data:', data);
+                console.log('Full API Response:', data); // ✅ Check de exacte API structuur
 
-                setLessons(data.data || []);
-                console.log('Updated lessons state:', data.data || []);
+                if (Array.isArray(data)) {
+                    setLessons(data); // ✅ Direct de array opslaan
+                } else {
+                    console.error('Unexpected API response format:', data);
+                }
 
             } catch (error) {
                 console.error('Error fetching lessons:', error);
@@ -88,7 +91,38 @@ function Dashboard() {
                     )}
                 </section>
             </section>
-        </>
-    )
+
+            {/* LESSEN OVERZICHT */}
+            <section className="flex flex-row flex-wrap justify-evenly">
+                {lessons.map((lesson) => (
+                    <article
+                        className="w-[40vw] rounded-md border-2 border-gray-300 shadow-lg p-6 m-3"
+                        key={lesson.id}
+                    >
+                        <div className="flex flex-row justify-between">
+                            <h2 className="text-2xl mb-4 font-semibold">{lesson.name}</h2>
+                            <div className="flex flex-row">
+                                {lesson.completed === 20 && <span className="mr-1">✔</span>}
+                                <h2>{lesson.assignments.length}/{lesson.assignments.length}</h2>
+                            </div>
+                        </div>
+                        <Link
+                            to={`/overzicht/${lesson.id}`}
+                            className={`flex justify-center items-center border-2 text-lg px-6 py-3 rounded-md transition duration-200 ease-in-out ${
+                                lesson.completed === 20
+                                    ? "bg-white text-blue-500"
+                                    : "bg-headerColor-100 text-white"
+                            }`}
+                        >
+                            {lesson.completed === 20 ? "Opnieuw oefenen" : "Start les"}
+                        </Link>
+                    </article>
+                ))}
+            </section>
+        </section>
+    );
+
+
 }
-            export default Dashboard;
+
+export default Dashboard;

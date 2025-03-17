@@ -22,19 +22,22 @@ export default function List() {
                 }
 
                 const responseData = await response.json();
-                console.log("API Response:", responseData); // ✅ Debugging
+                console.log("Full API Response:", responseData); // 🔍 Check hoe de API eruitziet
 
-                // 🛠 Data correct omzetten
-                const extractedData = responseData?.data || [];
-                setCategories(extractedData); // Direct de API-structuur gebruiken
+                // Controleer of responseData een array is
+                const extractedData = Array.isArray(responseData) ? responseData : [];
+                // console.log("Extracted Data Before Setting State:", extractedData);
+
+                setCategories(extractedData);
             } catch (error) {
                 console.error("Error fetching words:", error);
-                setCategories([]);
             }
         }
 
         fetchWords();
     }, []);
+
+
 
 
 
@@ -46,7 +49,7 @@ export default function List() {
                 : [...prev, signTitle]
         );
     };
-
+    console.log(categories);
     // 🔍 Filteren op zoekopdracht
     const filteredCategories = categories
         .map(category => {
@@ -58,6 +61,7 @@ export default function List() {
             return categoryMatches ? { ...category, signs: category.signs || [] } : { ...category, signs: filteredSigns };
         })
         .filter(category => category.signs.length > 0);
+
 
     return (
         <section className="p-8 max-w-3xl mx-auto">
@@ -79,7 +83,7 @@ export default function List() {
                             {category.signs.map(sign => (
                                 <li key={sign.id} className="flex justify-between items-center ml-4 text-lg">
                                     <Link
-                                        to={`/woord/${sign.title.toLowerCase().replace(/\s+/g, "-")}`}
+                                        to={`/woord/${sign.id}`}
                                         className="text-teal-700 font-semibold hover:underline"
                                     >
                                         {sign.title}

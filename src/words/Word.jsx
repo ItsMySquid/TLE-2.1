@@ -71,15 +71,18 @@ function Word() {
 
         try {
             const method = favoriet ? 'DELETE' : 'POST'; // Gebruik POST om toe te voegen, DELETE om te verwijderen
-            const response = await fetch(`http://145.24.223.48/api/v1/favorites`, {
+            const url = favoriet ? `http://145.24.223.48/api/v1/favorites/${id}` : `http://145.24.223.48/api/v1/favorites`; // De URL is anders voor DELETE en POST
+
+            const response = await fetch(url, {
                 method: method,
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
+                    'Content-Type': 'application/json', // Voeg de Content-Type header toe
                 },
-                body: JSON.stringify({
-                    sign_id: id, // Voeg het sign_id toe in de request body
-                }),
+                body: method === 'POST' ? JSON.stringify({
+                    sign_id: id, // Voeg het sign_id toe in de request body bij een POST
+                }) : null, // Geen body voor DELETE
             });
 
             if (!response.ok) {
@@ -91,6 +94,7 @@ function Word() {
             console.error("Error bij toevoegen/verwijderen favoriet:", error);
         }
     }
+
 
     return (
         <section>

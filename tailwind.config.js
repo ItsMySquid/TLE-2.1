@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,29 +8,30 @@ export default {
   theme: {
     extend: {
       colors: {
-        backgroundColor: {
-          100: '#ffffff',
-          dark: '#f0f0f0'
+        background: {
+          light: "#ffffff",
+          dark: "#1a202c",
         },
-        headerColor: {
-          100: '#008571'
+        header: {
+          DEFAULT: "#008571", // ✅ Navbar blijft groen in beide modi
+          dark: "#008571", // ✅ Voorkomt kleurverandering in dark mode
         },
-        buttonColor: {
-          100: '#4AD996',
-          dark: '#38A169', // Dark mode button color
-          positive: '#4AD996',
-          negative: '#EC6265'
+        button: {
+          DEFAULT: "#4AD996", // ✅ Standaard groen voor buttons
+          dark: "#4AD996", // ✅ Zelfde kleur in dark mode
+          positive: "#4AD996",
+          negative: "#EC6265",
         },
-        borderColor: {
-          100: '#2D8474',
-          dark: '#4A5568' // Dark mode border color
+        border: {
+          DEFAULT: "#2D8474", // ✅ Grenzen blijven hetzelfde
+          dark: "#2D8474",
         },
-        tekstColor: {
-          100: '#ffffff'
+        text: {
+          DEFAULT: "#000000", // ✅ Standaard tekstkleur
+          dark: "#ffffff",
         },
-      }
+      },
     },
   },
   plugins: [],
-}
-
+};

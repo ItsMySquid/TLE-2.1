@@ -1,20 +1,34 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Layout() {
     const location = useLocation();
+    const [isDarkMode, setIsDarkMode] = useState(
+        localStorage.getItem("darkMode") === "true"
+    );
+
+    useEffect(() => {
+        if (isDarkMode) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+        localStorage.setItem("darkMode", isDarkMode);
+    }, [isDarkMode]);
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <header className="bg-headerColor-100 text-white py-6 px-8 md:px-28 flex items-center relative shadow-lg">
+        <div className="flex flex-col min-h-screen bg-background dark:bg-background-dark text-text dark:text-text-dark">
+            {/* Header / Navbar */}
+            <header className="bg-[#008571] text-white py-6 px-8 md:px-28 flex items-center justify-between shadow-lg">
                 {/* Logo en titel */}
                 <div className="flex items-center">
                     <Link to="/" className="flex items-center space-x-3">
                         <img src="/logo.svg" alt="Logo" className="w-16 h-16"/>
-                        <h1 className="text-2xl font-semibold tracking-wide text-tekstColor-100">Gebarentaal</h1>
+                        <h1 className="text-2xl font-semibold tracking-wide">Gebarentaal</h1>
                     </Link>
                 </div>
 
-                {/* Navigatie in het midden */}
+                {/* Navigatie */}
                 <nav className="absolute left-1/2 transform -translate-x-1/2 flex space-x-8 text-lg font-medium">
                     {[
                         { name: "Woordenboek", path: "/woordenboek" },
@@ -34,16 +48,24 @@ function Layout() {
                         </Link>
                     ))}
                 </nav>
+
+                {/* Dark Mode Toggle */}
+                <button
+                    onClick={() => setIsDarkMode(!isDarkMode)}
+                    className="ml-auto p-2 rounded-full bg-primary text-white border border-primary hover:bg-[#00705e] transition"
+                >
+                    {isDarkMode ? "☀️" : "🌙"}
+                </button>
             </header>
 
+            {/* Pagina Inhoud */}
             <main className="flex-grow">
                 <Outlet />
             </main>
 
-            <footer>
-                <p className="text-center bg-tekstColor-100 text-backgroundColor-100 p-4">
-                    © 2025 Hogeschool Rotterdam
-                </p>
+            {/* Footer */}
+            <footer className="bg-background dark:bg-background-dark text-text dark:text-text-dark p-4 text-center">
+                © 2025 Hogeschool Rotterdam
             </footer>
         </div>
     );

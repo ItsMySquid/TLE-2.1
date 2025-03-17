@@ -1,5 +1,6 @@
-import { useParams } from "react-router";
-import { useState, useEffect, useRef } from "react";
+
+import {useParams, useNavigate} from "react-router"
+import React, { useState, useEffect, useRef } from "react";
 
 function shuffleArray(array) {
     return array
@@ -9,18 +10,21 @@ function shuffleArray(array) {
 }
 
 function Assignment() {
-    const params = useParams();
-    const id = params.id;
+    const { id } = useParams()
+    const navigate = useNavigate();
+    const assignmentRef = useRef(null);
+    const [message, setMessage] = useState(null)
+
     const [videoUrl, setVideoUrl] = useState("");
-    const [videos, setVideos] = useState([]);
     const [words, setWords] = useState([]);
+    const [name, setName] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
     const [shuffledOptions, setShuffledOptions] = useState([]);
-    const [isCompleted, setIsCompleted] = useState(false);
-    const [showErrorMessage, setShowErrorMessage] = useState(false); // Nieuw: Toon foutbericht
-    const assignmentRef = useRef(null);
+    const [wordUsage, setWordUsage] = useState({});
+    const [wordCount, setWordCount] = useState({});
+    const previousIndexRef = useRef(null);
 
     useEffect(() => {
         if (assignmentRef.current) {
@@ -36,49 +40,70 @@ function Assignment() {
                     },
                 });
 
-                if (!response.ok) {
-                    console.error(`Fout bij ophalen van de opdracht: ${response.status}`);
-                    return;
-                }
+                if (!response.ok) throw new Error(`Fout bij ophalen van de opdracht: ${response.status}`);
 
                 const data = await response.json();
 
-                if (!data || !data.data || !Array.isArray(data.data.signs)) {
-                    console.error("⚠️ Fout: `data.title` is niet beschikbaar");
-                    return;
-                }
+                if (!data?.data?.signs) throw new Error("Geen geldige data ontvangen.");
 
-                const titles = data.data.signs.map(sign => sign.title);
-                const videoLinks = data.data.signs.map(sign => sign.video);
+                const wordsData = data.data.signs.map(sign => ({
+                    title: sign.title,
+                    video: sign.video
+                }));
+                const nameCategorie = data.data.name;
 
-                setWords(titles);
-                setVideos(videoLinks);
+                const shuffledWordsData = shuffleArray(wordsData);
 
-                setVideoUrl(videoLinks[0] || "");
+                setWords(shuffledWordsData);
+                setName(nameCategorie)
+                setVideoUrl(shuffledWordsData[0]?.video || "");
             } catch (error) {
-                console.error(`Er is een fout opgetreden bij het ophalen van de opdracht: ${error}`);
+                console.error("Fout:", error.message);
             }
         }
-
         fetchCategoryWords();
     }, [id]);
 
     useEffect(() => {
-        if (!words || !Array.isArray(words) || words.length === 0 || currentIndex >= words.length) return;
+        if (words.length === 0 || currentIndex >= words.length) return;
 
         const currentAnswer = words[currentIndex];
         let availableWords = words.filter((word) => word !== currentAnswer);
-        let randomTitles = new Set();
+        let randomTitles = [currentAnswer];
 
-        while (randomTitles.size < 3 && availableWords.length > 0) {
+        let updatedUsage = { ...wordUsage };
+        updatedUsage[currentAnswer.title] = (updatedUsage[currentAnswer.title] || 0) + 1;
+
+        availableWords = availableWords.filter(word => (updatedUsage[word.title] || 0) < 4);
+
+        while (randomTitles.length < 4 && availableWords.length > 0) {
             const randomIndex = Math.floor(Math.random() * availableWords.length);
-            randomTitles.add(availableWords[randomIndex]);
+            const chosenWord = availableWords[randomIndex];
+
+            randomTitles.push(chosenWord);
+            updatedUsage[chosenWord.title] = (updatedUsage[chosenWord.title] || 0) + 1;
+
             availableWords.splice(randomIndex, 1);
         }
 
-        const finalOptions = shuffleArray([currentAnswer, ...randomTitles]);
+        if (randomTitles.length < 4) {
+            const remainingWords = words.filter((word) => !randomTitles.includes(word));
+            remainingWords.forEach(word => {
+                if (randomTitles.length < 4) {
+                    randomTitles.push(word);
+                }
+            });
+        }
+
+        const finalOptions = shuffleArray(randomTitles);
         setShuffledOptions(finalOptions);
+
+        setWordUsage(updatedUsage);
+
+        console.log('Shuffled Options:', finalOptions);  // Debugging om te zien wat er wordt gegenereerd
+
     }, [words, currentIndex]);
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -88,32 +113,59 @@ function Assignment() {
         setIsCorrect(correct);
 
         if (!correct) {
-            setShowErrorMessage(true); // Toon foutmelding als het antwoord fout is
+            setMessage(`Fout, je kunt na de opdracht het weer opnieuw proberen.`)
         }
     };
 
     const handleNext = () => {
-        const nextIndex = (currentIndex + 1) % videos.length;
+        let nextIndex = currentIndex + 1;
+
+        while (nextIndex < words.length && wordCount[words[nextIndex]] >= 4) {
+            nextIndex += 1;
+        }
+
+        if (nextIndex >= words.length) {
+            nextIndex = 0;
+        }
+
+        setWordCount((prev) => ({
+            ...prev,
+            [words[nextIndex].title]: (prev[words[nextIndex].title] || 0) + 1,
+        }));
+
+        previousIndexRef.current = currentIndex;
 
         setCurrentIndex(nextIndex);
-        setVideoUrl(videos[nextIndex]);
+        setVideoUrl(words[nextIndex]?.video || "");
 
         setSelectedOption(null);
         setIsCorrect(null);
-        setShowErrorMessage(false); // Verberg foutmelding bij verder gaan
+        setMessage("");
     };
 
     const handleReturn = () => {
-        window.location.reload(); // hier de return dat die terug gaat naar lessons
+        navigate("/Resultaten");
     };
 
     return (
         <>
             <section ref={assignmentRef}>
-                <h1 className="text-xl flex justify-center py-4 border-b border-black">
-                    Les {id} - Opdracht
-                </h1>
-                <div className="bg-backgroundColor-100 mx-auto my-12 max-w-2xl rounded-2xl p-6">
+                <div className="p-6 max-w-4xl mx-auto">
+                    <div className="flex items-center mb-4">
+                        {/* Terugknop links van de categoryName */}
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md"
+                        >
+                            Terug
+                        </button>
+                        {/* Center de categoryName */}
+                        <div className="flex-1 text-center">
+                            <h1 className="text-2xl font-bold">Opdracht {id} - {name}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-backgroundColor-dark mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
                     <div className="flex justify-center">
                         <video key={videoUrl} width="100%" className="p-4" controls>
                             {videoUrl ? (
@@ -131,21 +183,29 @@ function Assignment() {
                                     type="button"
                                     onClick={() => setSelectedOption(option)}
                                     className={`border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300
-                                    ${isCorrect === null
-                                        ? selectedOption === option
-                                            ? "bg-headerColor-100 text-white"
-                                            : "bg-white text-black"
-                                        : selectedOption === option
-                                            ? isCorrect
-                                                ? "bg-green-500 text-white" // goed antwoord
-                                                : "bg-red-500 text-white"   // fout antwoord
-                                            : "bg-white text-black"
+                                    ${
+                                        isCorrect === null
+                                            ? selectedOption === option
+                                                ? "bg-headerColor-100 text-white"
+                                                : "bg-white text-black"
+                                            : selectedOption === option
+                                                ? isCorrect
+                                                    ? "bg-buttonColor-positive text-black" // goed antwoord
+                                                    : "bg-buttonColor-negative text-black"   // fout antwoord
+                                                : "bg-white text-black"
                                     }`}
                                     disabled={isCorrect !== null}
                                 >
-                                    {option}
+                                    {option.title}
                                 </button>
                             ))}
+                        </div>
+                        <div>
+                            {message && (
+                                <p className="mt-4 text-lg font-semibold text-buttonColor-negative">
+                                    {message}
+                                </p>
+                            )}
                         </div>
                         {isCorrect === null ? (
                             <button
@@ -173,13 +233,6 @@ function Assignment() {
                             </button>
                         )}
                     </form>
-
-                    {/* Foutmelding als het antwoord fout is */}
-                    {showErrorMessage && !isCorrect && (
-                        <p className="mt-4 text-center text-red-600 font-semibold">
-                            Oeps! Je antwoord was niet correct. Je kunt je fouten later opnieuw oefenen.
-                        </p>
-                    )}
                 </div>
             </section>
         </>

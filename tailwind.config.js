@@ -9,7 +9,8 @@ export default {
       colors: {
         backgroundColor: {
           100: '#ffffff',
-          dark: '#f0f0f0'
+          dark: '#f0f0f0',
+          moreDark: '#4A4A4A'
         },
         headerColor: {
           100: '#008571'

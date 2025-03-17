@@ -35,10 +35,9 @@ function Word() {
 
     return (
         <section>
-            <div className="p-6 max-w-4xl mx-auto">
-                <div className="flex items-center mb-4">
-                    {/* Center de categoryName */}
-                    <div className="flex-1 text-center">
+            <div className="p-4 md:p-8 flex flex-col items-center">
+                <div className="max-w-6xl w-full">
+                    <div className="flex flex-col items-center text-center mb-6">
                         <h1 className="text-2xl font-bold">{word}</h1>
                     </div>
                 </div>
@@ -56,7 +55,7 @@ function Word() {
                 {/* Terug knop */}
                 <button
                     onClick={() => navigate(-1)}
-                    className="bg-teal-600 text-white py-2 px-6 rounded-lg"
+                    className="bg-borderColor-100 text-white py-2 px-6 rounded-lg"
                 >
                     Terug
                 </button>
@@ -72,7 +71,7 @@ function Word() {
                 {/* Volgende knop */}
                 <button
                     onClick={() => navigate(`/woord/${parseInt(id) + 1}`)}
-                    className="bg-teal-600 text-white py-2 px-6 rounded-lg"
+                    className="bg-borderColor-100 text-white py-2 px-6 rounded-lg"
                 >
                     Volgende
                 </button>

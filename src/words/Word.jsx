@@ -44,7 +44,7 @@ function Word() {
             if (!token) return;
 
             try {
-                const response = await fetch(`http://145.24.223.48/api/v1/favorites/${id}`, {
+                const response = await fetch(`http://145.24.223.48/api/v1/favorites`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -54,7 +54,9 @@ function Word() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setFavoriet(data.is_favorite); // Veronderstel dat de API een veld "is_favorite" teruggeeft
+                    // Controleer of het sign_id in de favorietenlijst voorkomt
+                    const isFavorite = data.some(fav => fav.sign_id === parseInt(id));
+                    setFavoriet(isFavorite); // Zet de favorietstatus
                 }
             } catch (error) {
                 console.error("Fout bij het ophalen van favorieten:", error);
@@ -69,12 +71,15 @@ function Word() {
 
         try {
             const method = favoriet ? 'DELETE' : 'POST'; // Gebruik POST om toe te voegen, DELETE om te verwijderen
-            const response = await fetch(`http://145.24.223.48/api/v1/favorites/${id}`, {
+            const response = await fetch(`http://145.24.223.48/api/v1/favorites`, {
                 method: method,
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                 },
+                body: JSON.stringify({
+                    sign_id: id, // Voeg het sign_id toe in de request body
+                }),
             });
 
             if (!response.ok) {

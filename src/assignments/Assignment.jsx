@@ -246,7 +246,7 @@ function Assignment() {
                         {isCorrect === null ? (
                             <button
                                 type="submit"
-                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-borderColor-100 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
+                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-[#008571] cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
                                 disabled={!selectedOption}
                             >
                                 Checken

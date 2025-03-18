@@ -255,7 +255,7 @@ function Assignment() {
                             <button
                                 type="button"
                                 onClick={handleNext}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
+                                className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
                             >
                                 Volgende
                             </button>
@@ -263,7 +263,7 @@ function Assignment() {
                             <button
                                 type="button"
                                 onClick={handleReturn}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
+                                className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
                             >
                                 Klaar
                             </button>

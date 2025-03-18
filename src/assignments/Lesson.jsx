@@ -112,7 +112,7 @@ function Lesson() {
                             return (
                                 <div key={item.id} className="flex items-center space-x-3">
                                     <span
-                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md dark:bg-gray-700 ${
+                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md${
                                             isCorrect === 1
                                                 ? "bg-green-500"
                                                 : isCorrect === 0

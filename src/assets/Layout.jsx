@@ -64,7 +64,7 @@ function Layout() {
             </main>
 
             {/* Footer */}
-            <footer className="bg-background dark:bg-background-dark text-text dark:text-text-dark p-4 text-center">
+            <footer className="bg-[#008571]  text-text dark:text-text-dark p-4 text-center">
                 © 2025 Hogeschool Rotterdam
             </footer>
         </div>

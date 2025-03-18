@@ -23,7 +23,6 @@ function Assignment() {
     const [shuffledOptions, setShuffledOptions] = useState([]);
     const [wordUsage, setWordUsage] = useState({});
     const [wordCount, setWordCount] = useState({});
-    const previousIndexRef = useRef(null);
 
     useEffect(() => {
         if (assignmentRef.current) {
@@ -51,8 +50,6 @@ function Assignment() {
                     video: sign.video,
                     sign_id: sign.id
                 }));
-                console.log("Opgehaalde woorden:", wordsData);
-
                 const nameCategorie = data.data.name;
                 const shuffledWordsData = shuffleArray(wordsData);
 
@@ -162,8 +159,6 @@ function Assignment() {
             [words[nextIndex].title]: (prev[words[nextIndex].title] || 0) + 1,
         }));
 
-        previousIndexRef.current = currentIndex;
-
         setCurrentIndex(nextIndex);
         setVideoUrl(words[nextIndex]?.video || "");
 
@@ -173,7 +168,7 @@ function Assignment() {
     };
 
     const handleReturn = () => {
-        navigate("/Resultaten");
+        navigate(`/les/${id}`);
     };
 
     return (

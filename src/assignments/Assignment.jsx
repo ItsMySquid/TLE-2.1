@@ -181,7 +181,7 @@ function Assignment() {
                         <div className="flex flex-col items-center text-center mb-6">
                             <button
                                 onClick={() => navigate(-1)}
-                                className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
+                                className="bg-[#008571] text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -201,12 +201,11 @@ function Assignment() {
                         </div>
                     </div>
                 </div>
-                <div
-                    className="bg-background-white dark:bg-background-dark w-full max-w-2xl mx-auto rounded-2xl p-6 shadow-lg">
+                <div className="bg-backgroundColor-dark mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
                     <div className="flex justify-center">
                         <video key={videoUrl} width="100%" className="p-4" controls>
                             {videoUrl ? (
-                                <source src={videoUrl} type="video/mp4"/>
+                                <source src={videoUrl} type="video/mp4" />
                             ) : (
                                 <p>Video wordt geladen...</p>
                             )}
@@ -227,8 +226,8 @@ function Assignment() {
                                                 : "bg-white text-black"
                                             : selectedOption === option
                                                 ? isCorrect
-                                                    ? "bg-buttonColor-positive text-[#4AD996]" // goed antwoord
-                                                    : "bg-buttonColor-negative text-[#EC6265]"   // fout antwoord
+                                                    ? "bg-buttonColor-positive text-black" // goed antwoord
+                                                    : "bg-buttonColor-negative text-black"   // fout antwoord
                                                 : "bg-white text-black"
                                     }`}
                                     disabled={isCorrect !== null}

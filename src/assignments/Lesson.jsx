@@ -2,27 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
 function Lesson() {
-    const { id } = useParams();
+    const { id } = useParams(); // ✅ ID uit de URL halen
     const [signs, setSigns] = useState([]);
-    const [categoryName, setCategoryName] = useState("");
-    const [results, setResults] = useState({});
-    const [lessons, setLessons] = useState(null);  // null omdat we geen les-ID hebben bij de start
+    const [categoryName, setCategoryName] = useState(""); // ✅ Opslaan van de categorie naam
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const userId = localStorage.getItem("user_id"); // 🔹 Haal user_id op uit localStorage
+    const navigate = useNavigate(); // Gebruik useNavigate voor navigatie
 
     useEffect(() => {
         const fetchSigns = async () => {
             try {
-                const response = await fetch(`http://145.24.223.48/api/v2/categories/${id}`);
+                const response = await fetch(`http://145.24.223.48/api/v1/categories/${id}`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch signs");
                 }
                 const data = await response.json();
-
-                console.log("Full Data:", data);
-
                 setCategoryName(data.data.name || "Onbekende Categorie");
                 setSigns(data.data.signs || []);
                 setLessons(data.data.lessons[0]?.id || null);  // Sla de ID van de eerste les op
@@ -74,12 +68,13 @@ function Lesson() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 font-radikal">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white font-radikal">
+            {/* Header met terugknop en titel */}
             <div className="p-4 md:p-8 flex flex-col items-center">
                 <div className="max-w-6xl w-full">
                     <div className="flex flex-col items-center text-center mb-6">
                         <button
-                            onClick={() => navigate(`/overzicht/${lessons || id}`)} // Gebruik de lessons ID voor de navigatie
+                            onClick={() => navigate(-1)}
                             className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
                         >
                             <svg
@@ -102,7 +97,10 @@ function Lesson() {
                 </div>
             </div>
 
+            {/* Content: Woordenlijst en opdrachtknop */}
             <div className="p-6 max-w-4xl mx-auto">
+                {/* Woordenlijst */}
+                <div className="pt-4">
                 <div className="border-gray-400 pt-4">
                     <h2 className="text-lg font-bold mb-4">Woordenlijst</h2>
                     <div className="grid grid-cols-2 gap-4">
@@ -112,7 +110,7 @@ function Lesson() {
                             return (
                                 <div key={item.id} className="flex items-center space-x-3">
                                     <span
-                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${
+                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md  dark:bg-gray-700"${
                                             isCorrect === 1
                                                 ? "bg-green-500"
                                                 : isCorrect === 0
@@ -129,9 +127,10 @@ function Lesson() {
                     </div>
                 </div>
 
+                {/* Opdracht-knop */}
                 <div className="mt-6 flex justify-end">
                     <Link to={`/opdracht/${id}`}>
-                        <button className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md">
+                        <button className="bg-[#00705e] text-white px-4 py-2 rounded-md shadow-md">
                             Maak de opdracht
                         </button>
                     </Link>

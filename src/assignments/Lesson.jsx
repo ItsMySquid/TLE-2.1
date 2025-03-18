@@ -11,6 +11,7 @@ function Lesson() {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId"); // 🔹 Haal user_id op uit localStorage
+    console.log(userId);
 
     useEffect(() => {
         const fetchSigns = async () => {

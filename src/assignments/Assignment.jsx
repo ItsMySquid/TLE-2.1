@@ -1,3 +1,4 @@
+
 import {useParams, useNavigate} from "react-router"
 import React, { useState, useEffect, useRef } from "react";
 
@@ -112,7 +113,7 @@ function Assignment() {
         setIsCorrect(correct);
 
         if (!correct) {
-            setMessage(`Helaas, dat is niet het juiste antwoord. Probeer het later nog eens!`)
+            setMessage(`Fout, je kunt na de opdracht het weer opnieuw proberen.`)
         }
     };
 
@@ -149,27 +150,17 @@ function Assignment() {
     return (
         <>
             <section ref={assignmentRef}>
-                <div className="p-4 md:p-8 flex flex-col items-center">
-                    <div className="max-w-6xl w-full">
-                        <div className="flex flex-col items-center text-center mb-6">
-                            <button
-                                onClick={() => navigate(-1)}
-                                className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 mr-2"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                                Terug
-                            </button>
+                <div className="p-6 max-w-4xl mx-auto">
+                    <div className="flex items-center mb-4">
+                        {/* Terugknop links van de categoryName */}
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md"
+                        >
+                            Terug
+                        </button>
+                        {/* Center de categoryName */}
+                        <div className="flex-1 text-center">
                             <h1 className="text-2xl font-bold">Opdracht {id} - {name}</h1>
                         </div>
                     </div>
@@ -195,7 +186,7 @@ function Assignment() {
                                     ${
                                         isCorrect === null
                                             ? selectedOption === option
-                                                ? "bg-backgroundColor-moreDark text-white"
+                                                ? "bg-headerColor-100 text-white"
                                                 : "bg-white text-black"
                                             : selectedOption === option
                                                 ? isCorrect

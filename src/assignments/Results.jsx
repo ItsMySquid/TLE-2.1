@@ -12,7 +12,6 @@ function Results() {
                 if (!response.ok) {
                     throw new Error("Failed to fetch signs");
                 }
-
                 const data = await response.json();
                 setSigns(data.data.signs || []);
             } catch (err) {
@@ -25,48 +24,36 @@ function Results() {
         fetchSigns();
     }, []);
 
-    if (loading) {
-        return <p className="text-center text-lg">Loading...</p>;
-    }
-
-    if (error) {
-        return <p className="text-center text-lg text-red-600">Error: {error}</p>;
-    }
-
     return (
-        <div>
+        <div className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white min-h-screen">
             <div className="p-6 max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold text-center mb-4">Les 1</h1>
-                <div className="relative w-full bg-gray-300 rounded-full h-6 mb-6 flex items-center justify-center">
-                    <div className="absolute left-1/4 transform -translate-x-1/2 h-6 bg-gray-100 rounded-full w-2/5"></div>
+                <h1 className="text-2xl font-bold mb-6">Les 1</h1>
 
-                    <div className="absolute inset-0 flex justify-between px-16 text-xs font-semibold text-black w-full">
-                        <span className="w-2/5 text-center">Categorie</span>
+                {loading && <p className="text-center text-lg">Loading...</p>}
+                {error && <p className="text-center text-lg text-red-600">Error: {error}</p>}
+
+                {!loading && !error && (
+                    <div className="border-gray-400 pt-4">
+                        <h2 className="text-lg font-bold mb-4">Woordenlijst</h2>
+                        <div className="grid grid-cols-2 gap-4">
+                            {signs.map((item, index) => (
+                                <div key={item.id} className="flex items-center space-x-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                                    <span className="w-8 h-8 flex items-center justify-center text-black font-bold rounded-md bg-gray-300 dark:bg-gray-700">
+                                        {index + 1}
+                                    </span>
+                                    <p className="text-lg font-semibold">{item.title}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <hr className="w-screen bg-black h-px border-0" />
-
-            <div className="p-6 max-w-4xl mx-auto">
-                {/* Word List */}
-                <div className="border-gray-400 pt-4">
-                    <h2 className="text-lg font-bold mb-4">Woordenlijst</h2>
-                    <div className="grid grid-cols-2 gap-4">
-                        {signs.map((item, index) => (
-                            <div key={item.id} className="flex items-center space-x-3">
-                                <span className="w-8 h-8 flex items-center justify-center text-white font-bold rounded-md bg-gray-200">
-                                    {index + 1}
-                                </span>
-                                <p className="text-lg font-semibold">{item.title}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                )}
 
                 {/* Button */}
                 <div className="mt-6 flex justify-end">
-                    <button className="bg-green-700 text-white px-6 py-2 rounded-full hover:bg-green-800">
+                    <button
+                        className="bg-[#008571] dark:bg-[#008571] text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
+                    >
+
                         Maak de opdracht
                     </button>
                 </div>

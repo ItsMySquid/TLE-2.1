@@ -1,5 +1,4 @@
-
-import {useParams, useNavigate} from "react-router"
+import { useParams, useNavigate } from "react-router";
 import React, { useState, useEffect, useRef } from "react";
 
 function shuffleArray(array) {
@@ -10,14 +9,14 @@ function shuffleArray(array) {
 }
 
 function Assignment() {
-    const { id } = useParams()
+    const { id } = useParams();
     const navigate = useNavigate();
     const assignmentRef = useRef(null);
-    const [message, setMessage] = useState(null)
+    const [message, setMessage] = useState(null);
 
     const [videoUrl, setVideoUrl] = useState("");
     const [words, setWords] = useState([]);
-    const [name, setName] = useState([]);
+    const [name, setName] = useState("");
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
@@ -35,28 +34,17 @@ function Assignment() {
             try {
                 const response = await fetch(`http://145.24.223.48/api/v1/categories/${id}`, {
                     method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
+                    headers: { 'Accept': 'application/json' },
                 });
 
                 if (!response.ok) throw new Error(`Fout bij ophalen van de opdracht: ${response.status}`);
-
                 const data = await response.json();
-
                 if (!data?.data?.signs) throw new Error("Geen geldige data ontvangen.");
 
-                const wordsData = data.data.signs.map(sign => ({
-                    title: sign.title,
-                    video: sign.video
-                }));
-                const nameCategorie = data.data.name;
-
-                const shuffledWordsData = shuffleArray(wordsData);
-
-                setWords(shuffledWordsData);
-                setName(nameCategorie)
-                setVideoUrl(shuffledWordsData[0]?.video || "");
+                const wordsData = data.data.signs.map(sign => ({ title: sign.title, video: sign.video }));
+                setWords(shuffleArray(wordsData));
+                setName(data.data.name);
+                setVideoUrl(wordsData[0]?.video || "");
             } catch (error) {
                 console.error("Fout:", error.message);
             }
@@ -75,35 +63,16 @@ function Assignment() {
         updatedUsage[currentAnswer.title] = (updatedUsage[currentAnswer.title] || 0) + 1;
 
         availableWords = availableWords.filter(word => (updatedUsage[word.title] || 0) < 4);
-
         while (randomTitles.length < 4 && availableWords.length > 0) {
             const randomIndex = Math.floor(Math.random() * availableWords.length);
-            const chosenWord = availableWords[randomIndex];
-
-            randomTitles.push(chosenWord);
-            updatedUsage[chosenWord.title] = (updatedUsage[chosenWord.title] || 0) + 1;
-
+            randomTitles.push(availableWords[randomIndex]);
+            updatedUsage[availableWords[randomIndex].title] = (updatedUsage[availableWords[randomIndex].title] || 0) + 1;
             availableWords.splice(randomIndex, 1);
         }
 
-        if (randomTitles.length < 4) {
-            const remainingWords = words.filter((word) => !randomTitles.includes(word));
-            remainingWords.forEach(word => {
-                if (randomTitles.length < 4) {
-                    randomTitles.push(word);
-                }
-            });
-        }
-
-        const finalOptions = shuffleArray(randomTitles);
-        setShuffledOptions(finalOptions);
-
+        setShuffledOptions(shuffleArray(randomTitles));
         setWordUsage(updatedUsage);
-
-        console.log('Shuffled Options:', finalOptions);  // Debugging om te zien wat er wordt gegenereerd
-
     }, [words, currentIndex]);
-
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -111,22 +80,13 @@ function Assignment() {
 
         const correct = selectedOption === words[currentIndex];
         setIsCorrect(correct);
-
-        if (!correct) {
-            setMessage(`Fout, je kunt na de opdracht het weer opnieuw proberen.`)
-        }
+        if (!correct) setMessage("Helaas, dat is niet het juiste antwoord. Probeer het later nog eens!");
     };
 
     const handleNext = () => {
         let nextIndex = currentIndex + 1;
-
-        while (nextIndex < words.length && wordCount[words[nextIndex]] >= 4) {
-            nextIndex += 1;
-        }
-
-        if (nextIndex >= words.length) {
-            nextIndex = 0;
-        }
+        while (nextIndex < words.length && wordCount[words[nextIndex]] >= 4) nextIndex += 1;
+        if (nextIndex >= words.length) nextIndex = 0;
 
         setWordCount((prev) => ({
             ...prev,
@@ -134,108 +94,69 @@ function Assignment() {
         }));
 
         previousIndexRef.current = currentIndex;
-
         setCurrentIndex(nextIndex);
         setVideoUrl(words[nextIndex]?.video || "");
-
         setSelectedOption(null);
         setIsCorrect(null);
         setMessage("");
     };
 
-    const handleReturn = () => {
-        navigate("/Resultaten");
-    };
-
     return (
-        <>
-            <section ref={assignmentRef}>
-                <div className="p-6 max-w-4xl mx-auto">
-                    <div className="flex items-center mb-4">
-                        {/* Terugknop links van de categoryName */}
-                        <button
-                            onClick={() => navigate(-1)}
-                            className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md"
-                        >
-                            Terug
-                        </button>
-                        {/* Center de categoryName */}
-                        <div className="flex-1 text-center">
-                            <h1 className="text-2xl font-bold">Opdracht {id} - {name}</h1>
-                        </div>
-                    </div>
+        <section ref={assignmentRef} className="bg-gray-900 text-white min-h-screen p-4">
+            <div className="max-w-6xl mx-auto text-center">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="bg-[#008571] dark:bg-[#00705e] text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0 transition duration-300"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
+                    Terug
+                </button>
+                <h1 className="text-2xl font-bold my-4">Opdracht {id} - {name}</h1>
+            </div>
+
+            <div className="bg-gray-800 mx-auto my-6 max-w-2xl rounded-2xl p-6 shadow-lg">
+                <div className="flex justify-center">
+                    <video key={videoUrl} width="100%" className="p-4" controls>
+                        {videoUrl ? <source src={videoUrl} type="video/mp4"/> : <p>Video wordt geladen...</p>}
+                    </video>
                 </div>
-                <div className="bg-backgroundColor-dark mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
-                    <div className="flex justify-center">
-                        <video key={videoUrl} width="100%" className="p-4" controls>
-                            {videoUrl ? (
-                                <source src={videoUrl} type="video/mp4" />
-                            ) : (
-                                <p>Video wordt geladen...</p>
-                            )}
-                        </video>
+                <form onSubmit={handleSubmit} className="flex flex-col p-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        {shuffledOptions.map((option, index) => (
+                            <button
+                                key={index}
+                                type="button"
+                                onClick={() => setSelectedOption(option)}
+                                className={`border border-gray-600 rounded-lg p-4 transition duration-300
+                                    ${isCorrect === null ?
+                                    selectedOption === option ? "bg-gray-700" : "bg-gray-900" :
+                                    selectedOption === option ? (isCorrect ? "bg-green-500" : "bg-red-500") : "bg-gray-900"}`}
+                                disabled={isCorrect !== null}
+                            >
+                                {option.title}
+                            </button>
+                        ))}
                     </div>
-                    <form onSubmit={handleSubmit} className="flex flex-col p-4" ref={assignmentRef}>
-                        <div className="grid grid-cols-2 gap-4">
-                            {shuffledOptions.map((option, index) => (
-                                <button
-                                    key={index}
-                                    type="button"
-                                    onClick={() => setSelectedOption(option)}
-                                    className={`border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300
-                                    ${
-                                        isCorrect === null
-                                            ? selectedOption === option
-                                                ? "bg-headerColor-100 text-white"
-                                                : "bg-white text-black"
-                                            : selectedOption === option
-                                                ? isCorrect
-                                                    ? "bg-buttonColor-positive text-black" // goed antwoord
-                                                    : "bg-buttonColor-negative text-black"   // fout antwoord
-                                                : "bg-white text-black"
-                                    }`}
-                                    disabled={isCorrect !== null}
-                                >
-                                    {option.title}
-                                </button>
-                            ))}
-                        </div>
-                        <div>
-                            {message && (
-                                <p className="mt-4 text-lg font-semibold text-buttonColor-negative">
-                                    {message}
-                                </p>
-                            )}
-                        </div>
-                        {isCorrect === null ? (
-                            <button
-                                type="submit"
-                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-borderColor-100 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
-                                disabled={!selectedOption}
-                            >
-                                Checken
-                            </button>
-                        ) : currentIndex + 1 < words.length ? (
-                            <button
-                                type="button"
-                                onClick={handleNext}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
-                            >
-                                Volgende
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={handleReturn}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
-                            >
-                                Klaar
-                            </button>
-                        )}
-                    </form>
-                </div>
-            </section>
-        </>
+                    {message && <p className="mt-4 text-lg text-red-400">{message}</p>}
+                    {isCorrect === null ? (
+                        <button type="submit" className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-blue-500' : 'bg-gray-600'}`} disabled={!selectedOption}>Checken</button>
+                    ) : (
+                        <button type="button" onClick={handleNext} className="mt-6 py-2 px-6 rounded-lg text-white bg-blue-500">Volgende</button>
+                    )}
+                </form>
+            </div>
+        </section>
     );
 }
 

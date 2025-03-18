@@ -100,7 +100,7 @@ function Overview() {
                             </div>
                             <Link
                                 to={`/les/${category.id}`}
-                                className="block bg-[#008571] dark:bg-[#008571] text-white py-3 rounded-lg shadow-md transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#00C5A5] font-semibold text-lg mt-4"
+                                className="block bg-[#008571] text-white py-3 rounded-lg shadow-md transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#00C5A5] font-semibold text-lg mt-4"
                             >
                                 Start categorie
                             </Link>

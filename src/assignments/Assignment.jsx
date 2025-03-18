@@ -23,6 +23,7 @@ function Assignment() {
     const [shuffledOptions, setShuffledOptions] = useState([]);
     const [wordUsage, setWordUsage] = useState({});
     const [wordCount, setWordCount] = useState({});
+    const userId = localStorage.getItem("user_id"); // 🔹 Haal user_id op uit localStorage
 
     useEffect(() => {
         if (assignmentRef.current) {
@@ -72,7 +73,7 @@ function Assignment() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    user_id: 1,
+                    user_id: userId,
                     sign_id: selectedSignId,
                     is_correct: isCorrect
                 }),
@@ -135,8 +136,9 @@ function Assignment() {
             setMessage(`Helaas, dat is niet het juiste antwoord. Probeer het later nog eens!`)
         }
 
-        const selectedSignId = selectedOption.sign_id;
+        const selectedSignId = words[currentIndex].sign_id;
         if (selectedSignId) {
+            // console.log(selectedSignId, isCorrect)
             await postResult(isCorrect, selectedSignId);
         } else {
             console.error("Kan resultaat niet opslaan: sign_id ontbreekt voor geselecteerd antwoord", selectedOption);

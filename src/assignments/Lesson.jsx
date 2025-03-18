@@ -6,22 +6,27 @@ function Lesson() {
     const [signs, setSigns] = useState([]);
     const [categoryName, setCategoryName] = useState("");
     const [results, setResults] = useState({});
+    const [lessons, setLessons] = useState(null);  // null omdat we geen les-ID hebben bij de start
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    // const userId = localStorage.getItem("user_id"); // 🔹 Haal user_id op uit localStorage
-    const userId = 1;
+    const userId = localStorage.getItem("user_id"); // 🔹 Haal user_id op uit localStorage
 
     useEffect(() => {
         const fetchSigns = async () => {
             try {
-                const response = await fetch(`http://145.24.223.48/api/v1/categories/${id}`);
+                const response = await fetch(`http://145.24.223.48/api/v2/categories/${id}`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch signs");
                 }
                 const data = await response.json();
+
+                console.log("Full Data:", data);
+
                 setCategoryName(data.data.name || "Onbekende Categorie");
                 setSigns(data.data.signs || []);
+                setLessons(data.data.lessons[0]?.id || null);  // Sla de ID van de eerste les op
+                console.log("First Lesson ID:", data.data.lessons[0]?.id);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -37,16 +42,14 @@ function Lesson() {
                 }
                 const data = await response.json();
 
-                console.log("API Response:", data); // ✅ Debuggen: Kijk of de data klopt
+                // console.log("API Response:", data);
 
                 if (!data || !Array.isArray(data.collection)) {
                     throw new Error("Invalid data structure received");
                 }
 
-                // 🔹 Filter resultaten voor de huidige gebruiker
                 const userResults = data.collection.filter(result => result.user_id === userId);
 
-                // 🔹 Maak een mapping van sign_id naar is_correct status
                 const resultMap = {};
                 userResults.forEach(result => {
                     resultMap[result.sign_id] = result.is_correct;
@@ -58,9 +61,6 @@ function Lesson() {
                 console.error("Error loading results:", err.message);
             }
         };
-
-
-
 
         fetchSigns();
         fetchResults();
@@ -79,7 +79,7 @@ function Lesson() {
                 <div className="max-w-6xl w-full">
                     <div className="flex flex-col items-center text-center mb-6">
                         <button
-                            onClick={() => navigate(-1)}
+                            onClick={() => navigate(`/overzicht/${lessons || id}`)} // Gebruik de lessons ID voor de navigatie
                             className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
                         >
                             <svg
@@ -96,6 +96,7 @@ function Lesson() {
                             </svg>
                             Terug
                         </button>
+
                         <h1 className="text-2xl font-bold">{categoryName}</h1>
                     </div>
                 </div>
@@ -106,23 +107,26 @@ function Lesson() {
                     <h2 className="text-lg font-bold mb-4">Woordenlijst</h2>
                     <div className="grid grid-cols-2 gap-4">
                         {signs.map((item, index) => {
-                            const isCorrect = results[item.id]; // Haal de status van dit woord op
+                            const isCorrect = results[item.id] === undefined ? null : results[item.id];
 
                             return (
                                 <div key={item.id} className="flex items-center space-x-3">
-                <span
-                    className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${
-                        isCorrect === 1 ? "bg-green-500" : isCorrect === 0 ? "bg-red-500" : "bg-gray-200"
-                    }`}
-                >
-                    {index + 1}
-                </span>
+                                    <span
+                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${
+                                            isCorrect === 1
+                                                ? "bg-green-500"
+                                                : isCorrect === 0
+                                                    ? "bg-red-500"
+                                                    : "bg-gray-200"
+                                        }`}
+                                    >
+                                        {index + 1}
+                                    </span>
                                     <p className="text-lg font-semibold">{item.title}</p>
                                 </div>
                             );
                         })}
                     </div>
-
                 </div>
 
                 <div className="mt-6 flex justify-end">

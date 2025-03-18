@@ -32,7 +32,7 @@ function Assignment() {
 
         async function fetchCategoryWords() {
             try {
-                const response = await fetch(`http://145.24.223.48/api/v1/categories/${id}`, {
+                const response = await fetch(`http://145.24.223.48/api/v2/categories/${id}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -42,15 +42,18 @@ function Assignment() {
                 if (!response.ok) throw new Error(`Fout bij ophalen van de opdracht: ${response.status}`);
 
                 const data = await response.json();
+                console.log("API Response:", data);
 
                 if (!data?.data?.signs) throw new Error("Geen geldige data ontvangen.");
 
                 const wordsData = data.data.signs.map(sign => ({
                     title: sign.title,
-                    video: sign.video
+                    video: sign.video,
+                    sign_id: sign.id
                 }));
-                const nameCategorie = data.data.name;
+                console.log("Opgehaalde woorden:", wordsData);
 
+                const nameCategorie = data.data.name;
                 const shuffledWordsData = shuffleArray(wordsData);
 
                 setWords(shuffledWordsData);
@@ -63,12 +66,33 @@ function Assignment() {
         fetchCategoryWords();
     }, [id]);
 
+    async function postResult(isCorrect, selectedSignId) {
+        try {
+            const response = await fetch(`http://145.24.223.48/api/v2/assignment_result`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: 1,
+                    sign_id: selectedSignId,
+                    is_correct: isCorrect
+                }),
+            });
+            if (!response.ok) throw new Error(`Fout bij ophalen van de opdracht: ${response.status}`);
+            console.log("Resultaat opgeslagen:", await response.json());
+        } catch (error) {
+            console.error("Fout bij het opslaan van het resultaat:", error.message);
+        }
+    }
+
     useEffect(() => {
         if (words.length === 0 || currentIndex >= words.length) return;
 
         const currentAnswer = words[currentIndex];
         let availableWords = words.filter((word) => word !== currentAnswer);
-        let randomTitles = [currentAnswer];
+        let randomTitles = [{ title: currentAnswer.title, video: currentAnswer.video, sign_id: currentAnswer.sign_id }];
 
         let updatedUsage = { ...wordUsage };
         updatedUsage[currentAnswer.title] = (updatedUsage[currentAnswer.title] || 0) + 1;
@@ -79,7 +103,7 @@ function Assignment() {
             const randomIndex = Math.floor(Math.random() * availableWords.length);
             const chosenWord = availableWords[randomIndex];
 
-            randomTitles.push(chosenWord);
+            randomTitles.push({ title: chosenWord.title, video: chosenWord.video, sign_id: chosenWord.sign_id });
             updatedUsage[chosenWord.title] = (updatedUsage[chosenWord.title] || 0) + 1;
 
             availableWords.splice(randomIndex, 1);
@@ -96,7 +120,6 @@ function Assignment() {
 
         const finalOptions = shuffleArray(randomTitles);
         setShuffledOptions(finalOptions);
-
         setWordUsage(updatedUsage);
 
         console.log('Shuffled Options:', finalOptions);  // Debugging om te zien wat er wordt gegenereerd
@@ -104,15 +127,22 @@ function Assignment() {
     }, [words, currentIndex]);
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (!selectedOption) return;
 
-        const correct = selectedOption === words[currentIndex];
-        setIsCorrect(correct);
+        const isCorrect = selectedOption.title === words[currentIndex].title;
+        setIsCorrect(isCorrect);
 
-        if (!correct) {
+        if (!isCorrect) {
             setMessage(`Helaas, dat is niet het juiste antwoord. Probeer het later nog eens!`)
+        }
+
+        const selectedSignId = selectedOption.sign_id;
+        if (selectedSignId) {
+            await postResult(isCorrect, selectedSignId);
+        } else {
+            console.error("Kan resultaat niet opslaan: sign_id ontbreekt voor geselecteerd antwoord", selectedOption);
         }
     };
 

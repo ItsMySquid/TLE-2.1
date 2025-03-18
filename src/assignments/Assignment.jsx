@@ -218,16 +218,16 @@ function Assignment() {
                                     key={index}
                                     type="button"
                                     onClick={() => setSelectedOption(option)}
-                                    className={`border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300
+                                    className={`border border-white rounded-lg p-4 cursor-pointer transition duration-300
                                     ${
                                         isCorrect === null
                                             ? selectedOption === option
-                                                ? "bg-backgroundColor-moreDark text-white"
-                                                : "bg-white text-black"
+                                                ? "bg-background-Dark text-white"
+                                                : "bg-[#1a202c] text-white"
                                             : selectedOption === option
                                                 ? isCorrect
-                                                    ? "bg-buttonColor-positive text-black" // goed antwoord
-                                                    : "bg-buttonColor-negative text-black"   // fout antwoord
+                                                    ? "bg-button-positive text-black" // goed antwoord
+                                                    : "bg-button-negative text-black"   // fout antwoord
                                                 : "bg-white text-black"
                                     }`}
                                     disabled={isCorrect !== null}

@@ -218,7 +218,7 @@ function Assignment() {
                                     key={index}
                                     type="button"
                                     onClick={() => setSelectedOption(option)}
-                                    className={`border border-white rounded-lg p-4 cursor-pointer transition duration-300
+                                    className={`border border-black rounded-lg p-4 cursor-pointer transition duration-300
     ${
                                         isCorrect === null
                                             ? selectedOption === option

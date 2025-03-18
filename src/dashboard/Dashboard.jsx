@@ -34,7 +34,7 @@ function Dashboard() {
     const progressBarWidth = lessons.length > 0 ? (completedCount / lessons.length) * 100 : 0;
 
     return (
-        <section className="m-[5vw] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+        <section className="m-[5vw] text-gray-900 dark:text-white min-h-screen">
             {/* CURSUSVOORTGANG */}
             <section className="m-12">
                 <div className="flex justify-between">

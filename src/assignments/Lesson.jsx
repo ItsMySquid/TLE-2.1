@@ -10,7 +10,8 @@ function Lesson() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const userId = localStorage.getItem("userId"); // 🔹 Haal user_id op uit localStorage
+    // const userId = localStorage.getItem("userId"); // 🔹 Haal user_id op uit localStorage
+    const userId = 1
 
     useEffect(() => {
         const fetchSigns = async () => {
@@ -112,12 +113,12 @@ function Lesson() {
                             return (
                                 <div key={item.id} className="flex items-center space-x-3">
                                     <span
-                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md${
+                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${
                                             isCorrect === 1
                                                 ? "bg-green-500"
                                                 : isCorrect === 0
                                                     ? "bg-red-500"
-                                                    : "bg-gray-200"
+                                                    : "bg-gray-500"
                                         }`}
                                     >
                                         {index + 1}

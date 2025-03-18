@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
 function Lesson() {
-    const { id } = useParams(); // ✅ ID uit de URL halen
+    const { id } = useParams();
     const [signs, setSigns] = useState([]);
-    const [categoryName, setCategoryName] = useState(""); // ✅ Opslaan van de categorie naam
+    const [categoryName, setCategoryName] = useState("");
+    const [results, setResults] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Gebruik useNavigate voor navigatie
+    const navigate = useNavigate();
+    const userId = localStorage.getItem("user_id"); // 🔹 Haal user_id op uit localStorage
 
     useEffect(() => {
         const fetchSigns = async () => {
@@ -25,7 +27,42 @@ function Lesson() {
                 setLoading(false);
             }
         };
+
+        const fetchResults = async () => {
+            try {
+                const response = await fetch(`http://145.24.223.48/api/v2/assignment_result`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch assignment results");
+                }
+                const data = await response.json();
+
+                console.log("API Response:", data); // ✅ Debuggen: Kijk of de data klopt
+
+                if (!data || !Array.isArray(data.collection)) {
+                    throw new Error("Invalid data structure received");
+                }
+
+                // 🔹 Filter resultaten voor de huidige gebruiker
+                const userResults = data.collection.filter(result => result.user_id === userId);
+
+                // 🔹 Maak een mapping van sign_id naar is_correct status
+                const resultMap = {};
+                userResults.forEach(result => {
+                    resultMap[result.sign_id] = result.is_correct;
+                });
+
+                setResults(resultMap);
+                console.log(resultMap);
+            } catch (err) {
+                console.error("Error loading results:", err.message);
+            }
+        };
+
+
+
+
         fetchSigns();
+        fetchResults();
     }, [id]);
 
     if (loading) {
@@ -37,7 +74,6 @@ function Lesson() {
 
     return (
         <div className="min-h-screen bg-gray-50 font-radikal">
-            {/* Header met terugknop en titel */}
             <div className="p-4 md:p-8 flex flex-col items-center">
                 <div className="max-w-6xl w-full">
                     <div className="flex flex-col items-center text-center mb-6">
@@ -64,24 +100,30 @@ function Lesson() {
                 </div>
             </div>
 
-            {/* Content: Woordenlijst en opdrachtknop */}
             <div className="p-6 max-w-4xl mx-auto">
-                {/* Woordenlijst */}
                 <div className="border-gray-400 pt-4">
                     <h2 className="text-lg font-bold mb-4">Woordenlijst</h2>
                     <div className="grid grid-cols-2 gap-4">
-                        {signs.map((item, index) => (
-                            <div key={item.id} className="flex items-center space-x-3">
-                                <span className="w-8 h-8 flex items-center justify-center text-white font-bold rounded-md bg-gray-200">
-                                    {index + 1}
-                                </span>
-                                <p className="text-lg font-semibold">{item.title}</p>
-                            </div>
-                        ))}
+                        {signs.map((item, index) => {
+                            const isCorrect = results[item.id]; // Haal de status van dit woord op
+
+                            return (
+                                <div key={item.id} className="flex items-center space-x-3">
+                <span
+                    className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${
+                        isCorrect === 1 ? "bg-green-500" : isCorrect === 0 ? "bg-red-500" : "bg-gray-200"
+                    }`}
+                >
+                    {index + 1}
+                </span>
+                                    <p className="text-lg font-semibold">{item.title}</p>
+                                </div>
+                            );
+                        })}
                     </div>
+
                 </div>
 
-                {/* Opdracht-knop */}
                 <div className="mt-6 flex justify-end">
                     <Link to={`/opdracht/${id}`}>
                         <button className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md">

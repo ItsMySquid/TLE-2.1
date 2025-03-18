@@ -6,7 +6,7 @@ export default function Favorites() {
     const [favoriteWords, setFavoriteWords] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
 
     useEffect(() => {
         fetchFavorites();

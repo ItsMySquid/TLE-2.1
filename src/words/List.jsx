@@ -7,7 +7,7 @@ export default function List() {
     const [categories, setCategories] = useState([]);
     const [favorites, setFavorites] = useState([]); // Favorieten bijhouden
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
 
     useEffect(() => {
         async function fetchWords() {

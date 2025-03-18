@@ -23,7 +23,7 @@ function Assignment() {
     const [shuffledOptions, setShuffledOptions] = useState([]);
     const [wordUsage, setWordUsage] = useState({});
     const [wordCount, setWordCount] = useState({});
-    const userId = localStorage.getItem("user_id"); // 🔹 Haal user_id op uit localStorage
+    const userId = localStorage.getItem("userId");
     console.log(userId)
 
     useEffect(() => {

@@ -11,7 +11,6 @@ function Lesson() {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId"); // 🔹 Haal user_id op uit localStorage
-    console.log(userId);
 
     useEffect(() => {
         const fetchSigns = async () => {
@@ -50,6 +49,7 @@ function Lesson() {
                 }
 
                 const userResults = data.collection.filter(result => result.user_id === userId);
+                console.log(userResults);
 
                 const resultMap = {};
                 userResults.forEach(result => {

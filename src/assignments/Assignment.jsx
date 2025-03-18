@@ -24,7 +24,6 @@ function Assignment() {
     const [wordUsage, setWordUsage] = useState({});
     const [wordCount, setWordCount] = useState({});
     const userId = localStorage.getItem("userId");
-    console.log(userId)
 
     useEffect(() => {
         if (assignmentRef.current) {

@@ -112,7 +112,7 @@ function Lesson() {
                             return (
                                 <div key={item.id} className="flex items-center space-x-3">
                                     <span
-                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md ${
+                                        className={`w-8 h-8 flex items-center justify-center text-white font-bold rounded-md dark:bg-gray-700 ${
                                             isCorrect === 1
                                                 ? "bg-green-500"
                                                 : isCorrect === 0
@@ -131,7 +131,7 @@ function Lesson() {
 
                 <div className="mt-6 flex justify-end">
                     <Link to={`/opdracht/${id}`}>
-                        <button className="bg-[#00705e] text-white px-4 py-2 rounded-md shadow-md dark:bg-gray-700">
+                        <button className="bg-[#00705e] text-white px-4 py-2 rounded-md shadow-md">
                             Maak de opdracht
                         </button>
                     </Link>

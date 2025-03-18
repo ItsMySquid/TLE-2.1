@@ -222,13 +222,13 @@ function Assignment() {
     ${
                                         isCorrect === null
                                             ? selectedOption === option
-                                                ? "bg-gray-300 dark:bg-gray-600 text-black dark:text-white"
-                                                : "border-black text-black"
+                                                ? "bg-gray-300 dark:bg-gray-600 text-black dark:text-white border-white"
+                                                : "border-black dark:border-white text-black dark:text-white"
                                             : selectedOption === option
                                                 ? isCorrect
                                                     ? "bg-button-positive text-black" // Goed antwoord (groen)
                                                     : "bg-button-negative text-black" // Fout antwoord (rood)
-                                                : "bg-white text-black"
+                                                : "bg-white dark:bg-[#1a202c] text-black dark:text-white dark:border-white"
                                     }`}
 
                                     disabled={isCorrect !== null}
@@ -239,7 +239,7 @@ function Assignment() {
                         </div>
                         <div>
                             {message && (
-                                <p className="mt-4 text-lg font-semibold text-buttonColor-negative">
+                                <p className="mt-4 text-lg font-semibold text-button-negative">
                                     {message}
                                 </p>
                             )}

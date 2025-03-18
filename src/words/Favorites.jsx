@@ -75,7 +75,8 @@ export default function Favorites() {
                     placeholder="Zoek een favoriet..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-2/3 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-2/3 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500
+    dark:bg-gray-200 dark:text-black"
                 />
             </div>
 

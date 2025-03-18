@@ -219,17 +219,18 @@ function Assignment() {
                                     type="button"
                                     onClick={() => setSelectedOption(option)}
                                     className={`border border-white rounded-lg p-4 cursor-pointer transition duration-300
-                                    ${
+    ${
                                         isCorrect === null
                                             ? selectedOption === option
-                                                ? "bg-background-Dark text-white"
-                                                : "bg-[#1a202c] text-white"
+                                                ? "bg-gray-300 dark:bg-gray-600 text-black dark:text-white"
+                                                : "border-black text-black"
                                             : selectedOption === option
                                                 ? isCorrect
-                                                    ? "bg-button-positive text-black" // goed antwoord
-                                                    : "bg-button-negative text-black"   // fout antwoord
+                                                    ? "bg-button-positive text-black" // Goed antwoord (groen)
+                                                    : "bg-button-negative text-black" // Fout antwoord (rood)
                                                 : "bg-white text-black"
                                     }`}
+
                                     disabled={isCorrect !== null}
                                 >
                                     {option.title}

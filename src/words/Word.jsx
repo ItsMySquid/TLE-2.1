@@ -103,7 +103,7 @@ function Word() {
                     <div className="flex flex-col items-center text-center mb-6">
                         <button
                             onClick={() => navigate("/Woordenboek")}
-                            className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
+                            className="bg-[#00705e] text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@ function Word() {
                 {/* Terug knop */}
                 <button
                     onClick={() => navigate(-1)}
-                    className="bg-borderColor-100 text-white py-2 px-6 rounded-lg"
+                    className="bg-[#00705e] text-white py-2 px-6 rounded-lg"
                 >
                     Vorige
                 </button>
@@ -150,7 +150,7 @@ function Word() {
                 {/* Volgende knop */}
                 <button
                     onClick={() => navigate(`/woord/${parseInt(id) + 1}`)}
-                    className="bg-borderColor-100 text-white py-2 px-6 rounded-lg"
+                    className="bg-[#00705e] text-white py-2 px-6 rounded-lg"
                 >
                     Volgende
                 </button>

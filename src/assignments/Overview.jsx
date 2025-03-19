@@ -84,20 +84,25 @@ function Overview() {
                     {categories.map((category) => (
                         <div
                             key={category.id}
-                            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 w-80 text-center p-6"
+                            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 w-80 text-center p-5"
                         >
                             <div className="bg-[#008571] dark:bg-[#008571] h-2 rounded-t-xl"></div>
                             <div className="flex flex-col items-center py-3 min-h-[200px] flex-grow">
-                            <div className="bg-[#008571] dark:bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2 shadow-md">
+                                <div
+                                    className="bg-[#008571] dark:bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2 shadow-md">
                                     <span className="text-3xl mb-1" aria-hidden="true">📖</span>
                                     <span className="sr-only">Boek icoon</span>
                                 </div>
                                 <h3 className="font-semibold text-xl text-gray-800 dark:text-white mt-4">{category.name}</h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">{category.description || ""}</p>
-                                <p className="text-gray-700 dark:text-gray-300 font-medium mt-1">
+
+                                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 flex-grow">{category.description || ""}</p>
+
+                                {/* gebaren blijven altijd op dezelfde plek */}
+                                <p className="text-gray-700 dark:text-gray-300 font-medium ">
                                     Aantal gebaren: {category.signs?.length || 0}
                                 </p>
                             </div>
+
                             <Link
                                 to={`/les/${category.id}`}
                                 className="block bg-[#008571] text-white py-3 rounded-lg shadow-md transition-all hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#00C5A5] font-semibold text-lg mt-4"

@@ -133,9 +133,10 @@ export default function List() {
                 sign.title.toLowerCase().includes(searchTerm.toLowerCase())
             ) || [];
 
-            return categoryMatches ? { ...category, signs: filteredSigns } : { ...category, signs: [] };
+            // Als er geen match is voor de categorie en geen matches voor de signs, retourneer dan niets
+            return (categoryMatches || filteredSigns.length > 0) ? { ...category, signs: filteredSigns } : null;
         })
-        .filter(category => category.signs.length > 0 || category.lessons.length > 0); // We tonen de categorie als er signs of lessons zijn
+        .filter(category => category !== null); // Verwijder de null-waarden
 
     return (
         <section className="p-8 max-w-3xl mx-auto">
@@ -171,10 +172,6 @@ export default function List() {
                                 </div>
                             )}
                         </div>
-
-                        {/* Rest van de code... */}
-
-
 
                         {/* Toon de signs */}
                         {category.signs?.length > 0 && (

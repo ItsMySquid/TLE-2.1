@@ -40,17 +40,16 @@ function FavoriteAssignment() {
                 const data = await response.json();
                 console.log("API Response:", data);
 
-                if (!Array.isArray(data) || data.length === 0) throw new Error("Geen geldige data ontvangen.");
+                if (!data || !Array.isArray(data.data) || data.data.length === 0) throw new Error("Geen geldige data ontvangen.");
 
-                // Transformeer de data correct
-                const wordsData = data.map(item => ({
-                    title: item.sign.title, // Pak de titel uit het geneste object
-                    video: item.sign.video, // Correcte URL naar de video
+                const wordsData = data.data.map(item => ({
+                    title: item.sign.title,
+                    video: item.sign.video,
                     sign_id: item.sign.id
                 }));
 
                 const shuffledWordsData = shuffleArray(wordsData);
-                console.log(shuffledWordsData)
+                console.log(shuffledWordsData);
                 setWords(shuffledWordsData);
                 setVideoUrl(shuffledWordsData[0]?.video || "");
             } catch (error) {
@@ -93,7 +92,9 @@ function FavoriteAssignment() {
     };
 
     const handleSelectOption = (option) => {
-        setSelectedOption(option);
+        if (!isChecked) { // Alleen geselecteerd als nog niet gecontroleerd
+            setSelectedOption(option);
+        }
     };
 
     const handleCheck = () => {
@@ -150,7 +151,8 @@ function FavoriteAssignment() {
                                 type="button"
                                 onClick={() => handleSelectOption(option)}
                                 className={`border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300
-                                    ${selectedOption === option ? (isCorrect ? "bg-buttonColor-positive" : "bg-buttonColor-negative") : "bg-white"}`}
+                                    ${selectedOption === option ? (isCorrect ? "bg-buttonColor-positive" : "bg-buttonColor-negative") : "bg-white"}
+                                    ${isChecked ? "cursor-not-allowed" : ""}`} // Disable buttons after check
                             >
                                 {option.title}
                             </button>
@@ -172,7 +174,7 @@ function FavoriteAssignment() {
                             Volgende
                         </button>
                     )}
-                    {isChecked === false && (
+                    {!isChecked && (
                         <button
                             type="button"
                             onClick={handleCheck}

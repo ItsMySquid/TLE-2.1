@@ -122,7 +122,7 @@ function FavoriteAssignment() {
                     </div>
                 </div>
             </div>
-            <div className="bg-gray-800 text-white mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
+            <div className="bg-backgroundColor-dark mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
                 <div className="flex justify-center">
                     <video key={videoUrl} width="100%" className="p-4" controls>
                         {videoUrl ? (
@@ -147,8 +147,8 @@ function FavoriteAssignment() {
                                         : "border-black dark:border-white text-black dark:text-white")
                                     : (selectedOption === option
                                         ? (isCorrect
-                                            ? "bg-green-500 text-black"
-                                            : "bg-red-500 text-black")
+                                            ? "bg-button-positive text-black"
+                                            : "bg-button-negative text-black")
                                         : "bg-white dark:bg-[#1a202c] text-black dark:text-white dark:border-white")
                                 }
                 `}

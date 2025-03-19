@@ -226,8 +226,8 @@ function Assignment() {
                                                 : "border-black dark:border-white text-black dark:text-white"
                                             : selectedOption === option
                                                 ? isCorrect
-                                                    ? "bg-button-positive text-black" // Goed antwoord (groen)
-                                                    : "bg-button-negative text-black" // Fout antwoord (rood)
+                                                    ? "bg-button-positive text-white dark:text-white" // Goed antwoord (groen)
+                                                    : "bg-button-negative text-white dark:text-white" // Fout antwoord (rood)
                                                 : "bg-white dark:bg-[#1a202c] text-black dark:text-white dark:border-white"
                                     }`}
 

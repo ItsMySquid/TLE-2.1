@@ -144,7 +144,7 @@ function Word() {
                 {/* Favorieten knop met FaStar */}
                 <FaStar
                     onClick={toggleFavorite}
-                    className={`text-4xl cursor-pointer ${favoriet ? 'text-yellow-500' : 'text-black'}`}
+                    className={`text-4xl cursor-pointer ${favoriet ? 'text-yellow-500' : 'text-grey'}`}
                 />
 
                 {/* Volgende knop */}

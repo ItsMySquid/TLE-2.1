@@ -181,7 +181,7 @@ function Assignment() {
                         <div className="flex flex-col items-center text-center mb-6">
                             <button
                                 onClick={() => navigate(-1)}
-                                className="bg-headerColor-100 text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
+                                className="bg-[#008571] text-white px-4 py-2 rounded-md shadow-md flex items-center self-start ml-0"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -218,18 +218,19 @@ function Assignment() {
                                     key={index}
                                     type="button"
                                     onClick={() => setSelectedOption(option)}
-                                    className={`border border-gray-300 rounded-lg p-4 cursor-pointer transition duration-300
-                                    ${
+                                    className={`border border-black rounded-lg p-4 cursor-pointer transition duration-300
+    ${
                                         isCorrect === null
                                             ? selectedOption === option
-                                                ? "bg-backgroundColor-moreDark text-white"
-                                                : "bg-white text-black"
+                                                ? "bg-gray-300 dark:bg-gray-600 text-black dark:text-white border-white"
+                                                : "border-black dark:border-white text-black dark:text-white"
                                             : selectedOption === option
                                                 ? isCorrect
-                                                    ? "bg-buttonColor-positive text-black" // goed antwoord
-                                                    : "bg-buttonColor-negative text-black"   // fout antwoord
-                                                : "bg-white text-black"
+                                                    ? "bg-button-positive text-black" // Goed antwoord (groen)
+                                                    : "bg-button-negative text-black" // Fout antwoord (rood)
+                                                : "bg-white dark:bg-[#1a202c] text-black dark:text-white dark:border-white"
                                     }`}
+
                                     disabled={isCorrect !== null}
                                 >
                                     {option.title}
@@ -238,7 +239,7 @@ function Assignment() {
                         </div>
                         <div>
                             {message && (
-                                <p className="mt-4 text-lg font-semibold text-buttonColor-negative">
+                                <p className="mt-4 text-lg font-semibold text-button-negative">
                                     {message}
                                 </p>
                             )}
@@ -246,7 +247,7 @@ function Assignment() {
                         {isCorrect === null ? (
                             <button
                                 type="submit"
-                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-borderColor-100 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
+                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-[#008571] cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
                                 disabled={!selectedOption}
                             >
                                 Checken
@@ -255,7 +256,7 @@ function Assignment() {
                             <button
                                 type="button"
                                 onClick={handleNext}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
+                                className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
                             >
                                 Volgende
                             </button>
@@ -263,7 +264,7 @@ function Assignment() {
                             <button
                                 type="button"
                                 onClick={handleReturn}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-borderColor-100 cursor-pointer"
+                                className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
                             >
                                 Klaar
                             </button>

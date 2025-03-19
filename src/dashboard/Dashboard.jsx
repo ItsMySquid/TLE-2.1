@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 function Dashboard() {
     const [lessons, setLessons] = useState([]);
     const [userCompletedSigns, setUserCompletedSigns] = useState({});
+    const userId = localStorage.getItem("user_id");
 
     useEffect(() => {
         async function fetchLessons() {
@@ -74,7 +75,8 @@ function Dashboard() {
                 console.log('User Completed Signs Data:', data);
 
                 if (Array.isArray(data.collection)) {
-                    const completedSigns = data.collection.reduce((acc, sign) => {
+                    const userResults = data.collection.filter(sign => sign.user_id === parseInt(userId));
+                    const completedSigns = userResults.reduce((acc, sign) => {
                         if (sign.is_correct) {
                             const lessonId = assignmentsMapping[sign.assignment_id];
                             if (lessonId) {
@@ -104,7 +106,7 @@ function Dashboard() {
         }
 
         fetchData();
-    }, []);
+    }, [userId]);
 
     const completedCount = lessons.filter(lesson => userCompletedSigns[lesson.id] === lesson.total_signs).length;
     const progressBarWidth = lessons.length > 0 ? (completedCount / lessons.length) * 100 : 0;

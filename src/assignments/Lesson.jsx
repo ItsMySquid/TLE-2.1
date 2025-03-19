@@ -48,7 +48,8 @@ function Lesson() {
                     throw new Error("Invalid data structure received");
                 }
 
-                const userResults = data.collection.filter(result => result.user_id === userId);
+                const userResults = data.collection.filter(result => result.user_id === Number(userId));
+                console.log(userResults);
 
                 const resultMap = {};
                 userResults.forEach(result => {

@@ -5,7 +5,6 @@ import { FaStar } from "react-icons/fa"; // ⭐ FontAwesome ster importeren
 export default function Favorites() {
     const [favoriteWords, setFavoriteWords] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-
     const token = localStorage.getItem("authToken");
 
     useEffect(() => {
@@ -28,10 +27,19 @@ export default function Favorites() {
                 throw new Error(`Fout bij ophalen favorieten: ${response.status}`);
             }
 
-            const favoriteList = await response.json();
-            setFavoriteWords(favoriteList);
+            const data = await response.json();
+            console.log(data);  // Log de volledige respons om de structuur te inspecteren
+
+            // Controleer of de data een object is en of het een 'data' veld heeft
+            if (data && Array.isArray(data.data)) {
+                setFavoriteWords(data.data); // Veronderstel dat de favorieten in data.data staan
+            } else {
+                console.error("De ontvangen data is geen array:", data);
+                setFavoriteWords([]); // Zet een lege array in als de data geen array is
+            }
         } catch (error) {
             console.error("Error bij ophalen favorieten:", error);
+            setFavoriteWords([]); // Zet een lege array in bij een fout
         }
     }
 
@@ -58,14 +66,17 @@ export default function Favorites() {
         }
     }
 
-    const filteredFavorites = favoriteWords.filter(fav =>
-        fav.sign.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Controleer of favoriteWords een array is voordat je .filter() aanroept
+    const filteredFavorites = Array.isArray(favoriteWords)
+        ? favoriteWords.filter(fav =>
+            fav.sign.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : [];
 
     return (
         <div className="p-6 max-w-5xl mx-auto">
-            <h1 className="text-4xl font-bold mb-2 text-black dark:text-white">Mijn favorieten</h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">Bekijk en beheer je favoriete video's</p>
+            <h1 className="text-4xl font-bold mb-2">Mijn favorieten</h1>
+            <p className="text-gray-600 mb-6">Bekijk en beheer je favoriete video's</p>
 
             {/* Zoekbalk */}
             <div className="mb-6">
@@ -74,9 +85,7 @@ export default function Favorites() {
                     placeholder="Zoek een favoriet..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-2/3 p-3 border border-gray-300 dark:border-gray-600 rounded-md
-                        focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white dark:bg-gray-800
-                        text-black dark:text-white"
+                    className="w-2/3 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
             </div>
 
@@ -84,17 +93,13 @@ export default function Favorites() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredFavorites.length > 0 ? (
                     filteredFavorites.map(fav => (
-                        <div key={fav.id} className="border border-gray-300 dark:border-gray-700 p-6
-                            rounded-lg shadow-lg flex flex-col items-center relative
-                            bg-white dark:bg-gray-800 text-black dark:text-white">
-
+                        <div key={fav.id} className="border p-6 rounded-lg shadow-lg flex flex-col items-center relative bg-white">
                             <p className="text-2xl font-semibold pt-5">{fav.sign.title}</p>
 
                             {/* ⭐ Klikbare ster voor verwijderen */}
                             <FaStar
-                                className="absolute top-3 right-3 text-yellow-500 text-3xl cursor-pointer
-                                    hover:text-gray-400 transition-colors"
-                                onClick={() => removeFavorite(fav.sign.id)}
+                                className="absolute top-3 right-3 text-yellow-500 text-3xl cursor-pointer hover:text-gray-400 transition-colors"
+                                onClick={() => removeFavorite(fav.sign.id)} // Gebruik fav.sign.id
                             />
 
                             <div className="mt-5 flex gap-3">
@@ -108,7 +113,7 @@ export default function Favorites() {
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-500 dark:text-gray-400 col-span-3 text-center">Geen favorieten gevonden.</p>
+                    <p className="text-gray-500 col-span-3 text-center">Geen favorieten gevonden.</p>
                 )}
             </div>
         </div>

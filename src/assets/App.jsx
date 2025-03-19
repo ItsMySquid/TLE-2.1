@@ -8,7 +8,9 @@ import Overview from "../assignments/Overview.jsx";
 import Results from "../assignments/Results.jsx";
 import Dashboard from "../dashboard/Dashboard.jsx";
 import Login from "../account/Login.jsx"; // Login als tussenpagina
+import FavoriteAssignment from "../assignments/FavoriteAssignment.jsx";
 import Layout from "./Layout.jsx";
+import Admin from "../account/Admin.jsx";
 import ProtectedRoute from "../account/ProtectedRoute.jsx"; // Beveiligde routes
 
 const router = createBrowserRouter([
@@ -28,6 +30,8 @@ const router = createBrowserRouter([
                     { path: "/Overzicht/:id", element: <Overview /> },
                     { path: "/Resultaten", element: <Results /> },
                     { path: "/Favorieten", element: <Favorites /> },
+                    { path: "/FavorietenOpdracht", element: <FavoriteAssignment /> },
+                    { path: "/Admin", element : <Admin /> }
                 ],
             },
         ],

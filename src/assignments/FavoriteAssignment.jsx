@@ -139,9 +139,8 @@ function FavoriteAssignment() {
                                 key={index}
                                 type="button"
                                 onClick={() => handleSelectOption(option)}
-                                className={`
-                  border rounded-lg p-4 cursor-pointer transition duration-300
-                  ${isCorrect === null
+                                className={` border border-black rounded-lg p-4 cursor-pointer transition duration-300
+                                    ${isCorrect === null
                                     ? (selectedOption === option
                                         ? "bg-gray-300 dark:bg-gray-600 text-black dark:text-white border-white"
                                         : "border-black dark:border-white text-black dark:text-white")
@@ -151,7 +150,7 @@ function FavoriteAssignment() {
                                             : "bg-button-negative text-black")
                                         : "bg-white dark:bg-[#1a202c] text-black dark:text-white dark:border-white")
                                 }
-                `}
+                                    `}
                                 disabled={isCorrect !== null}
                             >
                                 {option.title}

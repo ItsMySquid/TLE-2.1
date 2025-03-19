@@ -201,79 +201,81 @@ function Assignment() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-backgroundColor-dark mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
-                    <div className="flex justify-center">
-                        <video key={videoUrl} width="100%" className="p-4" controls>
-                            {videoUrl ? (
-                                <source src={videoUrl} type="video/mp4" />
-                            ) : (
-                                <p>Video wordt geladen...</p>
-                            )}
-                        </video>
-                    </div>
-                    <form onSubmit={handleSubmit} className="flex flex-col p-4" ref={assignmentRef}>
-                        <div className="grid grid-cols-2 gap-4">
-                            {shuffledOptions.map((option, index) => (
-                                <button
-                                    key={index}
-                                    type="button"
-                                    onClick={() => setSelectedOption(option)}
-                                    className={`border border-black rounded-lg p-4 cursor-pointer transition duration-300
-    ${
-                                        isCorrect === null
-                                            ? selectedOption === option
-                                                ? "bg-gray-300 dark:bg-gray-600 text-black dark:text-white border-white"
-                                                : "border-black dark:border-white text-black dark:text-white"
-                                            : selectedOption === option
-                                                ? isCorrect
-                                                    ? "bg-button-positive text-white dark:text-white" // Goed antwoord (groen)
-                                                    : "bg-button-negative text-white dark:text-white" // Fout antwoord (rood)
-                                                : "bg-white dark:bg-[#1a202c] text-black dark:text-white dark:border-white"
-                                    }`}
+                <div
+                    className="bg-[#F0F0F0] dark:bg-[#1a202c] mx-auto my-12 max-w-2xl rounded-2xl p-6 shadow-lg">
 
-                                    disabled={isCorrect !== null}
+                        <div className="flex justify-center">
+                            <video key={videoUrl} width="100%" className="p-4" controls>
+                                {videoUrl ? (
+                                    <source src={videoUrl} type="video/mp4"/>
+                                ) : (
+                                    <p>Video wordt geladen...</p>
+                                )}
+                            </video>
+                        </div>
+                        <form onSubmit={handleSubmit} className="flex flex-col p-4" ref={assignmentRef}>
+                            <div className="grid grid-cols-2 gap-4">
+                                {shuffledOptions.map((option, index) => (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        onClick={() => setSelectedOption(option)}
+                                        className={`border border-black rounded-lg p-4 cursor-pointer transition duration-300
+    ${
+                                            isCorrect === null
+                                                ? selectedOption === option
+                                                    ? "bg-gray-300 dark:bg-gray-600 text-black dark:text-white border-white"
+                                                    : "border-black dark:border-white text-black dark:text-white"
+                                                : selectedOption === option
+                                                    ? isCorrect
+                                                        ? "bg-button-positive text-white dark:text-white" // Goed antwoord (groen)
+                                                        : "bg-button-negative text-white dark:text-white" // Fout antwoord (rood)
+                                                    : "bg-[#F0F0F0} dark:bg-[#1a202c] text-black dark:text-white dark:border-white"
+                                        }`}
+
+                                        disabled={isCorrect !== null}
+                                    >
+                                        {option.title}
+                                    </button>
+                                ))}
+                            </div>
+                            <div>
+                                {message && (
+                                    <p className="mt-4 text-lg font-semibold text-button-negative">
+                                        {message}
+                                    </p>
+                                )}
+                            </div>
+                            {isCorrect === null ? (
+                                <button
+                                    type="submit"
+                                    className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-[#008571] cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
+                                    disabled={!selectedOption}
                                 >
-                                    {option.title}
+                                    Checken
                                 </button>
-                            ))}
-                        </div>
-                        <div>
-                            {message && (
-                                <p className="mt-4 text-lg font-semibold text-button-negative">
-                                    {message}
-                                </p>
+                            ) : currentIndex + 1 < words.length ? (
+                                <button
+                                    type="button"
+                                    onClick={handleNext}
+                                    className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
+                                >
+                                    Volgende
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={handleReturn}
+                                    className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
+                                >
+                                    Klaar
+                                </button>
                             )}
-                        </div>
-                        {isCorrect === null ? (
-                            <button
-                                type="submit"
-                                className={`mt-6 py-2 px-6 rounded-lg text-white ${selectedOption ? 'bg-[#008571] cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}`}
-                                disabled={!selectedOption}
-                            >
-                                Checken
-                            </button>
-                        ) : currentIndex + 1 < words.length ? (
-                            <button
-                                type="button"
-                                onClick={handleNext}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
-                            >
-                                Volgende
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={handleReturn}
-                                className="mt-6 py-2 px-6 rounded-lg text-white bg-[#008571] cursor-pointer"
-                            >
-                                Klaar
-                            </button>
-                        )}
-                    </form>
-                </div>
+                        </form>
+                    </div>
             </section>
         </>
-    );
+);
 }
 
 export default Assignment;

@@ -87,8 +87,8 @@ function Overview() {
                             className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 w-80 text-center p-6"
                         >
                             <div className="bg-[#008571] dark:bg-[#008571] h-2 rounded-t-xl"></div>
-                            <div className="flex flex-col items-center py-4 h-[12vw]">
-                                <div className="bg-[#008571] dark:bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2 shadow-md">
+                            <div className="flex flex-col items-center py-3 min-h-[200px] flex-grow">
+                            <div className="bg-[#008571] dark:bg-[#008571] w-16 h-16 rounded-full flex items-center justify-center py-2 shadow-md">
                                     <span className="text-3xl mb-1" aria-hidden="true">📖</span>
                                     <span className="sr-only">Boek icoon</span>
                                 </div>

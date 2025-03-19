@@ -93,7 +93,7 @@ export default function Favorites() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredFavorites.length > 0 ? (
                     filteredFavorites.map(fav => (
-                        <div key={fav.id} className="border p-6 rounded-lg shadow-lg flex flex-col items-center relative bg-white">
+                        <div key={fav.id} className="border p-6 rounded-lg shadow-lg flex flex-col items-center relative bg-white dark:[#1a202c]">
                             <p className="text-2xl font-semibold pt-5">{fav.sign.title}</p>
 
                             {/* ⭐ Klikbare ster voor verwijderen */}
@@ -119,3 +119,6 @@ export default function Favorites() {
         </div>
     );
 }
+
+
+

@@ -97,7 +97,7 @@ function Overview() {
 
                                 <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 flex-grow">{category.description || ""}</p>
 
-                                {/* gebaren blijven altijd op dezelfde plek */}
+                                {/* gebaren blijven altijd op dezelfde plek k*/}
                                 <p className="text-gray-700 dark:text-gray-300 font-medium ">
                                     Aantal gebaren: {category.signs?.length || 0}
                                 </p>

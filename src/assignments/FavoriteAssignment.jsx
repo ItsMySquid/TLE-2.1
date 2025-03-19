@@ -146,8 +146,8 @@ function FavoriteAssignment() {
                                         : "border-black dark:border-white text-black dark:text-white")
                                     : (selectedOption === option
                                         ? (isCorrect
-                                            ? "bg-button-positive text-black"
-                                            : "bg-button-negative text-black")
+                                            ? "bg-button-positive text-white dark:text-white"
+                                            : "bg-button-negative text-white dark:text-white")
                                         : "bg-white dark:bg-[#1a202c] text-black dark:text-white dark:border-white")
                                 }
                                     `}

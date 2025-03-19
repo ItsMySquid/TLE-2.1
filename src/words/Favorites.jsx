@@ -103,7 +103,7 @@ export default function Favorites() {
                             />
 
                             <div className="mt-5 flex gap-3">
-                                <Link to={`/les/${fav.sign.category_id}`} className="bg-teal-500 text-white px-5 py-2 rounded-full w-32 text-center">
+                                <Link to={`/les/${fav.sign.category.id}`} className="bg-teal-500 text-white px-5 py-2 rounded-full w-32 text-center">
                                     Categorie
                                 </Link>
                                 <Link to={`/woord/${fav.sign.id}`} className="bg-teal-500 text-white px-5 py-2 rounded-full w-32 text-center">

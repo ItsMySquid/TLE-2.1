@@ -17,7 +17,7 @@ const router = createBrowserRouter([
     { path: "/login", element: <Login /> }, // Tussenpagina
 
     {
-        //element: <ProtectedRoute />, // Beveiligde routes
+        element: <ProtectedRoute />, // Beveiligde routes
         children: [
             {
                 element: <Layout />,

@@ -159,7 +159,7 @@ function FavoriteAssignment() {
                         ))}
                     </div>
                     {message && (
-                        <p className={`mt-4 text-lg font-semibold ${isCorrect ? "text-green-500" : "text-red-500"}`}>
+                        <p className={`mt-4 text-lg font-semibold ${isCorrect ? "text-[#4AD996]" : "text-[#EC6265]"}`}>
                             {message}
                         </p>
                     )}

@@ -139,22 +139,22 @@ export default function List() {
 
     return (
         <section className="p-8 max-w-3xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Woordenboek</h1>
+            <h1 className="text-2xl font-bold mb-4 dark:text-white">Woordenboek</h1>
 
             <input
                 type="text"
                 placeholder="Zoek een categorie of woord..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-white"
             />
 
             {filteredCategories.length > 0 ? (
                 filteredCategories.map(category => (
-                    <div key={category.id} className="mb-6 p-4 border rounded-lg shadow">
+                    <div key={category.id} className="mb-6 p-4 border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                         {/* Toon de categorie en lessons naast elkaar */}
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-semibold">{category.name}</h2>
+                            <h2 className="text-xl font-semibold dark:text-white">{category.name}</h2>
 
                             {/* Toon de lessons als een sub-naam, als die er zijn */}
                             {category.lessons?.length > 0 && (
@@ -163,7 +163,7 @@ export default function List() {
                                         <Link
                                             key={index}
                                             to={`../les/${lesson.id}`}  // Link naar de pagina van de les met het ID
-                                            className="text-lg text-teal-600 hover:underline"
+                                            className="text-lg text-teal-600 hover:underline dark:text-white"
                                         >
                                             {lesson.name}
                                         </Link>
@@ -172,10 +172,6 @@ export default function List() {
                             )}
                         </div>
 
-                        {/* Rest van de code... */}
-
-
-
                         {/* Toon de signs */}
                         {category.signs?.length > 0 && (
                             <ul className="mt-3">
@@ -183,7 +179,7 @@ export default function List() {
                                     <li key={sign.id} className="flex justify-between items-center ml-4 text-lg">
                                         <Link
                                             to={`/woord/${sign.id}`}
-                                            className="text-teal-700 font-semibold hover:underline"
+                                            className="text-teal-700 font-semibold hover:underline dark:text-white"
                                         >
                                             {sign.title}
                                         </Link>
@@ -201,7 +197,7 @@ export default function List() {
                     </div>
                 ))
             ) : (
-                <p className="text-gray-500">Geen resultaten gevonden.</p>
+                <p className="text-gray-500 dark:text-white">Geen resultaten gevonden.</p>
             )}
         </section>
     );
